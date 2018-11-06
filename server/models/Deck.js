@@ -30,7 +30,7 @@ const DeckSchema = new mongoose.Schema({
   sideboard: {
     type: mongoose.Schema.ObjectId,
     required: false,
-    ref: 'Sideboard',
+    ref: 'Card',
   },
 
   createdDate: {

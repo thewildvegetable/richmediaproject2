@@ -5,14 +5,15 @@ const router = (app) => {
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
-  app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
+  app.get('/getDecks', controllers.Deck.getDecks);
+  app.get('/getDecksOwner', controllers.Deck.getDecksByOwner);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
-  app.get('/maker', mid.requiresLogin, controllers.Domo.makerPage);
-  app.post('/maker', mid.requiresLogin, controllers.Domo.make);
-  app.get('/remove', mid.requiresLogin, controllers.Domo.removerPage);
-  app.post('/remove', mid.requiresLogin, controllers.Domo.remove);
-  app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('/maker', mid.requiresLogin, controllers.Deck.makerPage);
+  app.post('/maker', mid.requiresLogin, controllers.Deck.make);
+  app.get('/remove', mid.requiresLogin, controllers.Deck.removerPage);
+  app.post('/remove', mid.requiresLogin, controllers.Deck.remove);
+  app.get('/', mid.requiresSecure, controllers.Account.allDecksPage);
 };
 
 module.exports = router;

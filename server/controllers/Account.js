@@ -6,6 +6,11 @@ const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+const allDecksPage = (req, res) => {
+  res.render('app', { csrfToken: req.csrfToken() });
+};
+
+
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
@@ -91,6 +96,7 @@ const signup = (request, response) => {
 };
 
 module.exports.loginPage = loginPage;
+module.exports.allDecksPage = allDecksPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;
