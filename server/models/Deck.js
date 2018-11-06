@@ -22,13 +22,13 @@ const DeckSchema = new mongoose.Schema({
   },
     
   cards: {
-    type: mongoose.Schema.ObjectId,
+    type: [mongoose.Schema.ObjectId],
     required: true,
     ref: 'Card',
   },
     
   sideboard: {
-    type: mongoose.Schema.ObjectId,
+    type: [mongoose.Schema.ObjectId],
     required: false,
     ref: 'Card',
   },
@@ -51,6 +51,10 @@ DeckSchema.statics.findByOwner = (ownerId, callback) => {
   };
 
   return DeckModel.find(search).select('name owner cards sideboard').exec(callback);
+};
+
+DeckSchema.statics.findAll = (callback) => {
+  return DeckModel.find({}).select('name owner').exec(callback);
 };
 
 DeckSchema.statics.removeById = (deckId, callback) => {

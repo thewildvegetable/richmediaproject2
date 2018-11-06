@@ -39,9 +39,9 @@ CardSchema.statics.toAPI = (doc) => ({
   types: doc.types,
 });
 
-CardSchema.statics.findByOwner = (ownerId, callback) => {
+CardSchema.statics.findByName = (name, callback) => {
   const search = {
-    owner: convertId(ownerId),
+    name: name.toLowerCase(),
   };
 
   return CardModel.find(search).select('name multiverseId legalities types').exec(callback);
