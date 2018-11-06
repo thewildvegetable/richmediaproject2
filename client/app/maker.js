@@ -1,89 +1,46 @@
-const handleDomo = (e) => {
+const handleDeck = (e) => {
     e.preventDefault();
     
-    $("#domoMessage").animate({width:'hide'}, 350);
-    
-    if($("#domoName").val() == '' || $("#domoAge").val() == '' || $("#domoLevel").val() == ''){
+    if($("#deckName").val() == '' || $("#deckAge").val() == '' || $("#deckLevel").val() == ''){
         handleError("All fields are required");
         return false;
     }
     
-    sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
-        loadDomosFromServer();
+    sendAjax('POST', $("#deckForm").attr("action"), $("#deckForm").serialize(), function() {
+        loaddecksFromServer();
     });
     
     return false;
 };
 
-const DomoForm = (props) => {
+const DeckForm = (props) => {
     return(
-        <form id="domoForm" name="domoForm"
-              onSubmit={handleDomo}
+        <form id="deckForm" name="deckForm"
+              onSubmit={handledeck}
               action="/maker"
               method="POST"
-              className="domoForm"
+              className="deckForm"
             >
             <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name" />
-            <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="number" name="age" placeholder="Domo Age" />
-        <input className="makeDomoSubmit" type="submit" value="Make Domo" />
-            <input id="domoLevel" type="number" name="level" placeholder="Domo Level" />
-        <label htmlFor="level" id="level">Level: </label>
+            <input id="deckName" type="text" name="name" placeholder="deck Name" />
+            <label htmlFor="age">Mainboard: </label>
+            <textarea id="deckList" rows="25" name="deckList" className="cardForm" placeholder="1 Forest"></textarea>
+            <label htmlFor="sideboard" id="sideboard">Sideboard: </label>
+            <textarea id="sideboard" rows="10" name="sideboard" className="cardForm" placeholder="1 Forest"></textarea>
             <input name="_csrf" type="hidden" value={props.csrf} />
+            <input className="makedeckSubmit" type="submit" value="Make deck" />
             
             
         </form>
     );
 };
 
-const DomoList = function(props) {
-    if (props.domos.length === 0) {
-        return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
-            </div>
-        );
-    }
-    
-    const domoNodes = props.domos.map(function(domo) {
-        console.dir(domo);
-        return (
-            <div key={domo._id} className="domo">
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className="domoName">Name: {domo.name} </h3>
-                <h3 className="domoAge">Age: {domo.age} </h3>
-                <h3 className="domoLevel">Level: {domo.level} </h3>
-            </div>
-        );
-    });
-    
-    return(
-        <div className="domoList">
-            {domoNodes}
-        </div>
-    );
-};
-
-const loadDomosFromServer = () => {
-    sendAjax('GET', '/getDomos', null, (data) => {
-        ReactDOM.render(
-            <DomoList domos={data.domos} />,
-            document.querySelector("#domos")
-        );
-    });
-};
-
 const setup = function(csrf) {
     ReactDOM.render(
-        <DomoForm csrf={csrf} />, document.querySelector("#makeDomo")
+        <deckForm csrf={csrf} />, document.querySelector("#makedeck")
     );
     
-    ReactDOM.render(
-        <DomoList domos={[]} />, document.querySelector("#domos")
-    );
-    
-    loadDomosFromServer();
+    loaddecksFromServer();
 };
 
 const getToken = () => {
