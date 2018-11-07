@@ -22,17 +22,22 @@ const DeckSchema = new mongoose.Schema({
   },
     
   cards: {
-    type: [mongoose.Schema.ObjectId],
+    type: [String],
     required: true,
-    ref: 'Card',
   },
     
   sideboard: {
-    type: [mongoose.Schema.ObjectId],
+    type: [String],
     required: false,
-    ref: 'Card',
   },
 
+  format: {
+    type: String,
+    required: false,
+    trim: true,
+    set: setName,
+  },
+    
   createdDate: {
     type: Date,
     default: Date.now,
@@ -43,6 +48,7 @@ DeckSchema.statics.toAPI = (doc) => ({
   name: doc.name,
   cards: doc.cards,
   sideboard: doc.sideboard,
+    format: doc.format,
 });
 
 DeckSchema.statics.findByOwner = (ownerId, callback) => {
@@ -50,7 +56,15 @@ DeckSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return DeckModel.find(search).select('name owner cards sideboard').exec(callback);
+  return DeckModel.find(search).select('name owner cards sideboard format').exec(callback);
+};
+
+DeckSchema.statics.findByFormat = (formatName, callback) => {
+  const search = {
+    format: formatName,
+  };
+    
+  return DeckModel.find(search).select('name owner').exec(callback);
 };
 
 DeckSchema.statics.findAll = (callback) => {

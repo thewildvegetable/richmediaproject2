@@ -4,7 +4,7 @@ const Deck = models.Deck;
 
 const makeDeck = (req, res) => {
   if (!req.body.name || !req.body.cards) {  
-    return res.status(400).json({ error: 'Name, age, and level are all required' });
+    return res.status(400).json({ error: 'Name and decklist are both required' });
   }
     
   //calculate # of cards in body.cards, if less than 60 (or when cmder is added, 100) send error back
@@ -74,11 +74,25 @@ const getDecksByOwner = (request, response) => {
   });
 };
 
+const getDecksByFormat = (request, response) => {
+  const req = request;
+  const res = response;
+
+  return Deck.DeckModel.findByFormat(req.body.format, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    return res.json({ decks: docs });
+  });
+};
+
 const getDecks = (request, response) => {
   const req = request;
   const res = response;
 
-  return Deck.DeckModel.findByOwner(req.session.account._id, (err, docs) => {
+  return Deck.DeckModel.findAll((err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
@@ -108,3 +122,4 @@ module.exports.removerPage = removerPage;
 module.exports.remove = removeDeck;
 module.exports.getDecks = getDecks;
 module.exports.getDecksByOwner = getDecksByOwner;
+module.exports.getDecksByFormat = getDecksByFormat;
