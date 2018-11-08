@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>DomoMaker</title>
+  <title>MTG Decks</title>
   <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
   <script crossorigin src="https://unpkg.com/prop-types/prop-types.min.js"></script>
@@ -13,11 +13,12 @@
 </head>
 <body>
   <nav>
-    <div class="navlink"><a href="/logout">Log out</a></div>
+    <div class="navlink"><a href="/login">Log in</a></div>
     <div class="navlink"><a href="/remove">Edit Decks</a></div>
   </nav>
+    <section id="errorMessage"></section>
   <section id="decks">
   </section>
-  <script src="/assets/bundle.js"></script>
+  <script src="/assets/mainBundle.js"></script>
 </body>
 </html>

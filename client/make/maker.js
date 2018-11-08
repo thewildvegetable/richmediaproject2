@@ -1,13 +1,17 @@
 const handleDeck = (e) => {
     e.preventDefault();
     
-    if($("#deckName").val() == '' || $("#deckAge").val() == '' || $("#deckLevel").val() == ''){
+    $("#errorMessage").text("");
+    
+    if($("#deckName").val() == '' || $("#deckList").val() == ''){
         handleError("All fields are required");
         return false;
     }
     
+    console.dir($("#deckForm").serialize());
+    
     sendAjax('POST', $("#deckForm").attr("action"), $("#deckForm").serialize(), function() {
-        loaddecksFromServer();
+        getToken();
     });
     
     return false;
@@ -16,7 +20,7 @@ const handleDeck = (e) => {
 const DeckForm = (props) => {
     return(
         <form id="deckForm" name="deckForm"
-              onSubmit={handledeck}
+              onSubmit={handleDeck}
               action="/maker"
               method="POST"
               className="deckForm"
@@ -37,10 +41,9 @@ const DeckForm = (props) => {
 
 const setup = function(csrf) {
     ReactDOM.render(
-        <deckForm csrf={csrf} />, document.querySelector("#makedeck")
+        <DeckForm csrf={csrf} />, 
+        document.querySelector("#makeDeck")
     );
-    
-    loaddecksFromServer();
 };
 
 const getToken = () => {

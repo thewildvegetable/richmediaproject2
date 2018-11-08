@@ -70,7 +70,8 @@ const setup = function(csrfToken) {
     console.dir(csrf);
     
     ReactDOM.render(
-        <DeckList decks={[]} />, document.querySelector("#decks")
+        <DeckList decks={[]} />, 
+        document.querySelector("#decks")
     );
     
     loadDecksFromServer();

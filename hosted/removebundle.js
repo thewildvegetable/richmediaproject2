@@ -2,90 +2,87 @@
 
 var csrf = void 0;
 
-var removeDomo = function removeDomo(e) {
+var removeDeck = function removeDeck(e) {
     e.preventDefault();
 
-    $("#domoMessage").animate({ width: 'hide' }, 350);
-
-    var domoForm = e.target;
-    var idField = domoForm.querySelector('.idField');
-    var csrfField = domoForm.querySelector('.csrfField');
+    var deckForm = e.target;
+    var idField = deckForm.querySelector('.idField');
+    var csrfField = deckForm.querySelector('.csrfField');
 
     //build our x-www-form-urlencoded format
     var formData = '_id=' + idField.value + '&_csrf=' + csrfField.value;
 
     sendAjax('POST', '/remove', formData, function () {
-        loadDomosFromServer();
+        loadDecksFromServer();
     });
 
     return false;
 };
 
-var DomoList = function DomoList(props) {
-    if (props.domos.length === 0) {
+var DeckList = function DeckList(props) {
+    if (props.decks.length === 0) {
         return React.createElement(
             'div',
-            { className: 'domoList' },
+            { className: 'deckList' },
             React.createElement(
                 'h3',
-                { className: 'emptyDomo' },
-                'No Domos present'
+                { className: 'emptyDeck' },
+                'No Decks present'
             )
         );
     }
 
-    var domoNodes = props.domos.map(function (domo) {
-        console.dir(domo);
+    var deckNodes = props.decks.map(function (deck) {
+        console.dir(deck);
         return React.createElement(
             'div',
-            { key: domo._id, className: 'domo' },
-            React.createElement('img', { src: '/assets/img/domoface.jpeg', alt: 'domo face', className: 'domoFace' }),
+            { key: deck._id, className: 'deck' },
             React.createElement(
                 'h3',
-                { className: 'domoName' },
+                { className: 'deckName' },
                 'Name: ',
-                domo.name,
+                deck.name,
                 ' '
             ),
             React.createElement(
                 'h3',
-                { className: 'domoAge' },
+                { className: 'deckAge' },
                 'Age: ',
-                domo.age,
+                deck.age,
                 ' '
             ),
             React.createElement(
                 'h3',
-                { className: 'domoLevel' },
+                { className: 'deckLevel' },
                 'Level: ',
-                domo.level,
+                deck.level,
                 ' '
             ),
             React.createElement(
                 'form',
-                { name: 'domoForm',
-                    onSubmit: removeDomo,
+                { name: 'deckForm',
+                    onSubmit: removeDeck,
                     action: '/remove',
                     method: 'POST',
-                    className: 'removeDomoForm'
+                    className: 'removeDeckForm'
                 },
-                React.createElement('input', { name: '_id', type: 'hidden', value: domo._id, className: 'idField' }),
+                React.createElement('input', { name: '_id', type: 'hidden', value: deck._id, className: 'idField' }),
                 React.createElement('input', { name: '_csrf', type: 'hidden', value: csrf, className: 'csrfField' }),
-                React.createElement('input', { className: 'makeDomoSubmit', type: 'submit', value: 'Remove' })
+                React.createElement('input', { className: 'makeDeckSubmit', type: 'submit', value: 'Remove' })
             )
         );
     });
 
     return React.createElement(
         'div',
-        { className: 'domoList' },
-        domoNodes
+        { className: 'deckList' },
+        deckNodes
     );
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
-    sendAjax('GET', '/getDomos', null, function (data) {
-        ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
+var loadDecksFromServer = function loadDecksFromServer() {
+    sendAjax('GET', '/getDecks', null, function (data) {
+        ReactDOM.render(React.createElement(DeckList, { decks: data.decks }), document.querySelector("#decks"));
     });
 };
 
@@ -94,9 +91,9 @@ var setup = function setup(csrfToken) {
     csrf = csrfToken;
     console.dir(csrf);
 
-    ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
+    ReactDOM.render(React.createElement(DeckList, { decks: [] }), document.querySelector("#decks"));
 
-    loadDomosFromServer();
+    loadDecksFromServer();
 };
 
 var getToken = function getToken() {
@@ -112,11 +109,10 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
     $("#errorMessage").text(message);
-    $("#domoMessage").animate({ width: 'toggle' }, 350);
 };
 
 var redirect = function redirect(response) {
-    $("#domoMessage").animate({ width: 'hide' }, 350);
+    $("#errorMessage").text("");
     window.location = response.redirect;
 };
 

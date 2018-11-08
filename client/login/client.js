@@ -1,12 +1,12 @@
 const handleLogin = (e) => {
     e.preventDefault();
     
+    $("#errorMessage").text("");
+    
     if($("#user").val() == '' || $("#pass").val() == ''){
         handleError("Username or password is empty");
         return false;
     }
-    
-    console.log($("input[name=_csrf]").val());
     
     sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
     
@@ -15,6 +15,8 @@ const handleLogin = (e) => {
 
 const handleSignup = (e) => {
     e.preventDefault();
+    
+    $("#errorMessage").text("");
     
     if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == ''){
         handleError("All fields are required");

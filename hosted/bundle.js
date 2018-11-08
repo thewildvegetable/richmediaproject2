@@ -1,116 +1,58 @@
 "use strict";
 
-var handleDomo = function handleDomo(e) {
+var handleDeck = function handleDeck(e) {
     e.preventDefault();
 
-    $("#domoMessage").animate({ width: 'hide' }, 350);
+    $("#errorMessage").text("");
 
-    if ($("#domoName").val() == '' || $("#domoAge").val() == '' || $("#domoLevel").val() == '') {
+    if ($("#deckName").val() == '' || $("#deckList").val() == '') {
         handleError("All fields are required");
         return false;
     }
 
-    sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
-        loadDomosFromServer();
+    console.dir($("#deckForm").serialize());
+
+    sendAjax('POST', $("#deckForm").attr("action"), $("#deckForm").serialize(), function () {
+        getToken();
     });
 
     return false;
 };
 
-var DomoForm = function DomoForm(props) {
+var DeckForm = function DeckForm(props) {
     return React.createElement(
         "form",
-        { id: "domoForm", name: "domoForm",
-            onSubmit: handleDomo,
+        { id: "deckForm", name: "deckForm",
+            onSubmit: handleDeck,
             action: "/maker",
             method: "POST",
-            className: "domoForm"
+            className: "deckForm"
         },
         React.createElement(
             "label",
             { htmlFor: "name" },
             "Name: "
         ),
-        React.createElement("input", { id: "domoName", type: "text", name: "name", placeholder: "Domo Name" }),
+        React.createElement("input", { id: "deckName", type: "text", name: "name", placeholder: "deck Name" }),
         React.createElement(
             "label",
             { htmlFor: "age" },
-            "Age: "
+            "Mainboard: "
         ),
-        React.createElement("input", { id: "domoAge", type: "number", name: "age", placeholder: "Domo Age" }),
-        React.createElement("input", { className: "makeDomoSubmit", type: "submit", value: "Make Domo" }),
-        React.createElement("input", { id: "domoLevel", type: "number", name: "level", placeholder: "Domo Level" }),
+        React.createElement("textarea", { id: "deckList", rows: "25", name: "deckList", className: "cardForm", placeholder: "1 Forest" }),
         React.createElement(
             "label",
-            { htmlFor: "level", id: "level" },
-            "Level: "
+            { htmlFor: "sideboard", id: "sideboard" },
+            "Sideboard: "
         ),
-        React.createElement("input", { name: "_csrf", type: "hidden", value: props.csrf })
+        React.createElement("textarea", { id: "sideboard", rows: "10", name: "sideboard", className: "cardForm", placeholder: "1 Forest" }),
+        React.createElement("input", { name: "_csrf", type: "hidden", value: props.csrf }),
+        React.createElement("input", { className: "makedeckSubmit", type: "submit", value: "Make deck" })
     );
-};
-
-var DomoList = function DomoList(props) {
-    if (props.domos.length === 0) {
-        return React.createElement(
-            "div",
-            { className: "domoList" },
-            React.createElement(
-                "h3",
-                { className: "emptyDomo" },
-                "No Domos yet"
-            )
-        );
-    }
-
-    var domoNodes = props.domos.map(function (domo) {
-        console.dir(domo);
-        return React.createElement(
-            "div",
-            { key: domo._id, className: "domo" },
-            React.createElement("img", { src: "/assets/img/domoface.jpeg", alt: "domo face", className: "domoFace" }),
-            React.createElement(
-                "h3",
-                { className: "domoName" },
-                "Name: ",
-                domo.name,
-                " "
-            ),
-            React.createElement(
-                "h3",
-                { className: "domoAge" },
-                "Age: ",
-                domo.age,
-                " "
-            ),
-            React.createElement(
-                "h3",
-                { className: "domoLevel" },
-                "Level: ",
-                domo.level,
-                " "
-            )
-        );
-    });
-
-    return React.createElement(
-        "div",
-        { className: "domoList" },
-        domoNodes
-    );
-};
-
-var loadDomosFromServer = function loadDomosFromServer() {
-    sendAjax('GET', '/getDomos', null, function (data) {
-        ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector("#domos"));
-    });
 };
 
 var setup = function setup(csrf) {
-    ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector("#makeDomo"));
-
-    ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector("#domos"));
-
-    loadDomosFromServer();
+    ReactDOM.render(React.createElement(DeckForm, { csrf: csrf }), document.querySelector("#makeDeck"));
 };
 
 var getToken = function getToken() {
@@ -126,11 +68,10 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
     $("#errorMessage").text(message);
-    $("#domoMessage").animate({ width: 'toggle' }, 350);
 };
 
 var redirect = function redirect(response) {
-    $("#domoMessage").animate({ width: 'hide' }, 350);
+    $("#errorMessage").text("");
     window.location = response.redirect;
 };
 

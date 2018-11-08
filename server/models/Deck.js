@@ -22,12 +22,12 @@ const DeckSchema = new mongoose.Schema({
   },
     
   cards: {
-    type: [String],
+    type: String,
     required: true,
   },
     
   sideboard: {
-    type: [String],
+    type: String,
     required: false,
   },
 
