@@ -77,6 +77,7 @@ const makeDeck = (req, res, cards, sideboard, errors) => {
   const deckPromise = newDeck.save();
 
   deckPromise.then(() => {
+      console.dir ('deck added');
     res.json({ redirect: '/maker' });
   });
 
@@ -146,12 +147,11 @@ const getCards = (req, res) => {
 
     // parse out the maindeck
   const cards = req.body.deckList.split('\r\n');
-    // console.dir(cards);
 
     // parse out sideboard
   let sideboard = [];
   if (req.body.sideboard !== '') {
-    sideboard = req.body.deckList.split('\r\n');
+    sideboard = req.body.sideboard.split('\r\n');
   }
 
     // make sure no card is repeated in the mainboard. enforce playset rule
@@ -179,6 +179,7 @@ const getCards = (req, res) => {
       message += ' Please combine them into 1 line';
       return res.status(400).json({ error: message });
     }
+
     cards.push(sideboard[i]);
   }
 
@@ -247,6 +248,17 @@ const removerPage = (req, res) => {
   });
 };
 
+const viewDeckPage = (req, res) => {
+  Deck.DeckModel.findById(req.body.deckId, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    return res.render('view', { csrfToken: req.csrfToken(), deck: docs });
+  });
+};
+
 const getDecksByOwner = (request, response) => {
   const req = request;
   const res = response;
@@ -304,6 +316,7 @@ const removeDeck = (request, response) => {
 
 module.exports.makerPage = makerPage;
 module.exports.make = getCards;
+module.exports.viewDeckPage = viewDeckPage;
 module.exports.removerPage = removerPage;
 module.exports.remove = removeDeck;
 module.exports.getDecks = getDecks;

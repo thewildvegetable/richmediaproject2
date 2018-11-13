@@ -67,6 +67,14 @@ DeckSchema.statics.findByFormat = (formatName, callback) => {
   return DeckModel.find(search).select('name owner').exec(callback);
 };
 
+DeckSchema.statics.findById = (deckId, callback) => {
+  const search = {
+    _id: convertId(deckId),
+  };
+
+  return DeckModel.find(search).select('name owner cards sideboard format').exec(callback);
+};
+
 DeckSchema.statics.findAll = (callback) => DeckModel.find({}).select('name owner').exec(callback);
 
 DeckSchema.statics.removeById = (deckId, callback) => {
