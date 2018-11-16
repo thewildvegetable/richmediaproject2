@@ -91,10 +91,6 @@ var MoveNewPage = function MoveNewPage(num) {
     //update pageNumber
     pageNum += num;
 
-    //make both buttons visible
-    previousButton.style.display = 'block';
-    nextButton.style.display = 'block';
-
     //verify new page exists
     if (pageNum < 1) {
         pageNum = 1;
@@ -108,6 +104,10 @@ var MoveNewPage = function MoveNewPage(num) {
         nextButton.style.display = 'none';
         return;
     }
+
+    //make both buttons visible
+    previousButton.style.display = 'block';
+    nextButton.style.display = 'block';
 
     //seperate out the 20 decks on the new page
     var start = 20 * (pageNum - 1);
@@ -134,10 +134,10 @@ var setup = function setup(csrf) {
     nextButton = document.getElementById('next');
 
     //add onclick events
-    previousButton.onClick = function () {
+    previousButton.onclick = function () {
         MoveNewPage(-1);
     };
-    nextButton.onClick = function () {
+    nextButton.onclick = function () {
         MoveNewPage(1);
     };
 

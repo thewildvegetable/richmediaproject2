@@ -79,10 +79,6 @@ const MoveNewPage = (num) => {
     //update pageNumber
     pageNum += num;
     
-    //make both buttons visible
-    previousButton.style.display = 'block';
-    nextButton.style.display = 'block';
-    
     //verify new page exists
     if (pageNum < 1) {
         pageNum = 1;
@@ -96,6 +92,10 @@ const MoveNewPage = (num) => {
         nextButton.style.display = 'none';
         return;
     }
+    
+    //make both buttons visible
+    previousButton.style.display = 'block';
+    nextButton.style.display = 'block';
     
     //seperate out the 20 decks on the new page
     let start = 20 * (pageNum-1);
@@ -131,11 +131,11 @@ const setup = function(csrf) {
     nextButton = document.getElementById('next');
     
     //add onclick events
-    previousButton.onClick = () => {
-        MoveNewPage(-1)
+    previousButton.onclick = () => {
+        MoveNewPage(-1);
     };
-    nextButton.onClick = () => {
-        MoveNewPage(1)
+    nextButton.onclick = () => {
+        MoveNewPage(1);
     };
     
     loadDecksFromServer();

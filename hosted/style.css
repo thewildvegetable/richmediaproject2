@@ -293,12 +293,13 @@ h3.deckLevel {
 }
 
 #next{
-    margin-left: 35%;
-    text-align: center;
+    margin-right: 25%;
+    float: right;
 }
 
 #previous{
     margin-left: 25%;
+    float: left;
 }
 
 #previous:hover{
