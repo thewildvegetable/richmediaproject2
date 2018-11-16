@@ -1,6 +1,8 @@
 "use strict";
 
-var deck = void 0;
+var deck = void 0; //the deck object gotten from the server
+var mainDeck = void 0; //the json object of the cards in the mainboard
+var sideboard = void 0; //the json object of the cards in the sideboard
 
 //setup the mouseover event
 var CardMouseover = function CardMouseover(multiverseId) {
@@ -16,8 +18,12 @@ var CardMouseover = function CardMouseover(multiverseId) {
 
 //display the mainboard
 var MainboardDisplay = function MainboardDisplay(props) {
+    //get the keys
+    var mainKeys = Object.keys(props.deck);
+
     //setup the mainboard
-    var deckNodes = props.deck.map(function (card) {
+    var deckNodes = mainKeys.map(function (key) {
+        var card = props.deck[key];
         return React.createElement(
             "div",
             { multiverseId: card._id, className: "maindeckCard", onmouseover: function onmouseover() {
@@ -42,8 +48,12 @@ var MainboardDisplay = function MainboardDisplay(props) {
 
 //display the sideboard
 var SideboardDisplay = function SideboardDisplay(props) {
-    //setup the sideboard
-    var deckNodes = props.side.map(function (card) {
+    //get the keys
+    var sideKeys = Object.keys(props.side);
+
+    //setup the mainboard
+    var deckNodes = sideKeys.map(function (key) {
+        var card = props.side[key];
         return React.createElement(
             "div",
             { multiverseId: card._id, className: "sideboardCard", onmouseover: function onmouseover() {
@@ -67,20 +77,32 @@ var SideboardDisplay = function SideboardDisplay(props) {
 };
 
 var setup = function setup(csrf) {
-    console.dir(deck);
-    ReactDOM.render(React.createElement(MainboardDisplay, { deck: deck.cards }), document.querySelector("#mainboard"));
+    ReactDOM.render(React.createElement(MainboardDisplay, { deck: mainDeck }), document.querySelector("#mainboard"));
 
-    ReactDOM.render(React.createElement(SideboardDisplay, { side: deck.sideboard }), document.querySelector("#sideboard"));
+    ReactDOM.render(React.createElement(SideboardDisplay, { side: sideboard }), document.querySelector("#sideboard"));
 };
 
 var getDeck = function getDeck(csrf) {
     //get the id from window.location
-    var search = window.location.search;
+    var search = window.location.search.slice(1);
     console.dir(search);
 
     sendAjax('GET', '/getDeck', search, function (result) {
         //now get the deck
-        deck = result.deck;
+        deck = result.deck[0];
+
+        //set the name
+        document.getElementById('deckName').textContent = deck.name;
+
+        console.dir(deck);
+
+        //unstringify the json objects for cards and sideboard
+        mainDeck = JSON.parse(deck.cards);
+        sideboard = JSON.parse(deck.sideboard);
+
+        console.dir(mainDeck);
+        console.dir(sideboard);
+
         setup(csrf);
     });
 };

@@ -1,5 +1,7 @@
 const models = require('../models');
 const mtg = require('mtgsdk');
+const query = require('querystring');
+const url = require('url');
 
 const Deck = models.Deck;
 
@@ -250,15 +252,17 @@ const removerPage = (req, res) => {
 };
 
 const getDeckById = (req, res) => {
-    console.dir(req.body);
+    // parse the url
+  const parsedUrl = url.parse(req.url);
+
+  // grab the query parameters
+  const params = query.parse(parsedUrl.query);
     
-  Deck.DeckModel.findById(req.body._id, (err, docs) => {
+  Deck.DeckModel.findById(params._id, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
     }
-      
-      console.dir(docs);
 
     return res.json({ deck: docs });
   });
