@@ -13,7 +13,7 @@ var handleDeck = function handleDeck(e) {
     console.dir($("#deckForm").serialize());
 
     sendAjax('POST', $("#deckForm").attr("action"), $("#deckForm").serialize(), function () {
-        getToken();
+        window.location = '/';
     });
 
     return false;

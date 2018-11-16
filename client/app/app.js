@@ -2,6 +2,8 @@ let csrf;
 let deckNodes = [];     //all the decks from the server as react elements
 let pageNum = 1;        //what page of decks are we on?
 let maxPageNum = 1;     //how many pages are there
+let previousButton;     //previous page button
+let nextButton;     //next page button
 
 //send to the server a request to view a specific decklist
 const ViewDeck = (e) => {
@@ -19,6 +21,8 @@ const ViewDeck = (e) => {
 //make the react elements for each deck
 const DeckList = function(props) {
     if (props.decks.length === 0) {
+        document.querySelector("#deckPages").style.display = 'none';
+        
         return (
             <div className="deckList">
                 <h3 className="emptyDeck">No Decks present</h3>
@@ -75,13 +79,21 @@ const MoveNewPage = (num) => {
     //update pageNumber
     pageNum += num;
     
+    //make both buttons visible
+    previousButton.style.display = 'block';
+    nextButton.style.display = 'block';
+    
     //verify new page exists
     if (pageNum < 1) {
         pageNum = 1;
+        //hide previous button
+        previousButton.style.display = 'none';
         return;
     }
     if (pageNum > maxPageNum){
         pageNum = maxPageNum;
+        //hide next button
+        nextButton.style.display = 'none';
         return;
     }
     
@@ -115,11 +127,16 @@ const setup = function(csrf) {
     );
     
     //get the next button and the previous button
-    let previousButton = document.getElementById('previous');
-    let nextButton = document.getElementById('next');
+    previousButton = document.getElementById('previous');
+    nextButton = document.getElementById('next');
     
     //add onclick events
-    previousButton.onClick = 
+    previousButton.onClick = () => {
+        MoveNewPage(-1)
+    };
+    nextButton.onClick = () => {
+        MoveNewPage(1)
+    };
     
     loadDecksFromServer();
 };
@@ -128,6 +145,17 @@ const setup = function(csrf) {
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
         csrf = result.csrfToken;
+        
+        //check if logged in
+        if (result.loggedIn){
+            //change login to logout
+            let loginLink = document.getElementById('login');
+            loginLink.textContent = 'Log out';
+            loginLink.href = '/logout';
+            
+            //make logged in tabs visible
+            document.querySelector('#loggedIn').style.display = 'block';
+        }
         setup(csrf);
     });
 };

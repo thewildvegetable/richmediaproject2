@@ -26,8 +26,8 @@ var MainboardDisplay = function MainboardDisplay(props) {
         var card = props.deck[key];
         return React.createElement(
             "div",
-            { multiverseId: card._id, className: "maindeckCard", onmouseover: function onmouseover() {
-                    return CardMouseover(card._id);
+            { multiverseId: card.multiverseid, className: "maindeckCard", onMouseOver: function onMouseOver() {
+                    return CardMouseover(card.multiverseid);
                 } },
             React.createElement(
                 "h3",
@@ -56,8 +56,8 @@ var SideboardDisplay = function SideboardDisplay(props) {
         var card = props.side[key];
         return React.createElement(
             "div",
-            { multiverseId: card._id, className: "sideboardCard", onmouseover: function onmouseover() {
-                    return CardMouseover(card._id);
+            { multiverseId: card.multiverseid, className: "sideboardCard", onMouseOver: function onMouseOver() {
+                    return CardMouseover(card.multiverseid);
                 } },
             React.createElement(
                 "h3",
@@ -80,6 +80,8 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(MainboardDisplay, { deck: mainDeck }), document.querySelector("#mainboard"));
 
     ReactDOM.render(React.createElement(SideboardDisplay, { side: sideboard }), document.querySelector("#sideboard"));
+
+    //check if logged in
 };
 
 var getDeck = function getDeck(csrf) {
@@ -109,6 +111,16 @@ var getDeck = function getDeck(csrf) {
 
 var getToken = function getToken() {
     sendAjax('GET', '/getToken', null, function (result) {
+        //check if logged in
+        if (result.loggedIn) {
+            //change login to logout
+            var loginLink = document.getElementById('login');
+            loginLink.textContent = 'Log out';
+            loginLink.href = '/logout';
+
+            //make logged in tabs visible
+            document.querySelector('#loggedIn').style.display = 'block';
+        }
         getDeck(result.csrfToken);
     });
 };

@@ -73,17 +73,14 @@ const makeDeck = (req, res, cards, sideboard, errors) => {
     format: 'Standard',
     owner: req.session.account._id,
   };// todo replace format with req.body.format
-    
-    console.dir(deckData.cards);
-    console.dir(deckData.sideboard);
 
   const newDeck = new Deck.DeckModel(deckData);
 
   const deckPromise = newDeck.save();
 
   deckPromise.then(() => {
-      console.dir ('deck added');
-    res.json({ redirect: '/maker' });
+    console.dir('deck added');
+    res.json({ redirect: '/' });
   });
 
   deckPromise.catch((err) => {
@@ -111,7 +108,18 @@ const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, e
   const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
 
   mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).then(results => {
-    const card = results[0];
+    let card = results[0];
+      
+      //check if multiverseid exists
+      for (let i = 1; i < results.length; i++){
+          //if the card has a multiverseid break out
+          if (card.multiverseid){
+              break;
+          }
+          //get next card
+          card = results[i];
+      }
+      
     card.copies = numCopies;
 
     // if this iteration is still in the main deck
@@ -257,7 +265,7 @@ const getDeckById = (req, res) => {
 
   // grab the query parameters
   const params = query.parse(parsedUrl.query);
-    
+
   Deck.DeckModel.findById(params._id, (err, docs) => {
     if (err) {
       console.log(err);
@@ -268,9 +276,7 @@ const getDeckById = (req, res) => {
   });
 };
 
-const viewDeckPage = (req, res) => {
-    return res.render('view', { csrfToken: req.csrfToken() });
-};
+const viewDeckPage = (req, res) => res.render('view', { csrfToken: req.csrfToken() });
 
 const getDecksByOwner = (request, response) => {
   const req = request;

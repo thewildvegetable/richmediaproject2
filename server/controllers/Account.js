@@ -35,16 +35,23 @@ const login = (request, response) => {
 
     req.session.account = Account.AccountModel.toAPI(account);
 
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/' });
   });
 };
 
 const getToken = (request, response) => {
   const req = request;
   const res = response;
+    
+    //tell the client if they are logged in
+    let loggedIn=false;
+    if (req.session.account){
+        loggedIn = true;
+    }
 
   const csrfJSON = {
     csrfToken: req.csrfToken(),
+      loggedIn: loggedIn,
   };
 
   res.json(csrfJSON);

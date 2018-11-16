@@ -4,6 +4,8 @@ var csrf = void 0;
 var deckNodes = []; //all the decks from the server as react elements
 var pageNum = 1; //what page of decks are we on?
 var maxPageNum = 1; //how many pages are there
+var previousButton = void 0; //previous page button
+var nextButton = void 0; //next page button
 
 //send to the server a request to view a specific decklist
 var ViewDeck = function ViewDeck(e) {
@@ -21,6 +23,8 @@ var ViewDeck = function ViewDeck(e) {
 //make the react elements for each deck
 var DeckList = function DeckList(props) {
     if (props.decks.length === 0) {
+        document.querySelector("#deckPages").style.display = 'none';
+
         return React.createElement(
             'div',
             { className: 'deckList' },
@@ -87,13 +91,21 @@ var MoveNewPage = function MoveNewPage(num) {
     //update pageNumber
     pageNum += num;
 
+    //make both buttons visible
+    previousButton.style.display = 'block';
+    nextButton.style.display = 'block';
+
     //verify new page exists
     if (pageNum < 1) {
         pageNum = 1;
+        //hide previous button
+        previousButton.style.display = 'none';
         return;
     }
     if (pageNum > maxPageNum) {
         pageNum = maxPageNum;
+        //hide next button
+        nextButton.style.display = 'none';
         return;
     }
 
@@ -118,17 +130,35 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement('deckForm', { csrf: csrf }), document.querySelector("#decks"));
 
     //get the next button and the previous button
-    var previousButton = document.getElementById('previous');
-    var nextButton = document.getElementById('next');
+    previousButton = document.getElementById('previous');
+    nextButton = document.getElementById('next');
 
     //add onclick events
-    previousButton.onClick = loadDecksFromServer();
+    previousButton.onClick = function () {
+        MoveNewPage(-1);
+    };
+    nextButton.onClick = function () {
+        MoveNewPage(1);
+    };
+
+    loadDecksFromServer();
 };
 
 //get csrf token
 var getToken = function getToken() {
     sendAjax('GET', '/getToken', null, function (result) {
         csrf = result.csrfToken;
+
+        //check if logged in
+        if (result.loggedIn) {
+            //change login to logout
+            var loginLink = document.getElementById('login');
+            loginLink.textContent = 'Log out';
+            loginLink.href = '/logout';
+
+            //make logged in tabs visible
+            document.querySelector('#loggedIn').style.display = 'block';
+        }
         setup(csrf);
     });
 };

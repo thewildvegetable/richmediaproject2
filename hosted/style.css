@@ -325,5 +325,55 @@ h3.deckLevel {
 }
 
 #card{
+    position: fixed;
+    left: 85%;
+    top: 30%;
+}
+
+#loggedIn{
+    display: none;
+}
+
+#deckName {
+    margin-left: 45%;
+}
+
+.sectionHeading{
+    
+}
+
+.mainDeckCard{
+    width: 300px;
+    margin-left: 10px;
+}
+
+.sideboardCard{
+    width: 300px;
+    margin-left: 10px;
+}
+
+#mainboard{
+    clear:left;
+    margin-left: 10%;
+    float: left;
+    background-color: #55acee;
+    border-style: solid;
+}
+
+#main{
+    margin-left: 15%;
+    float: left;
+}
+
+#sideboard{
+    clear:right;
     float: right;
+    margin-right: 21%;
+    background-color: #55acee;
+    border-style: solid;
+}
+
+#side{
+    float: right;
+    margin-right: 27%;
 }

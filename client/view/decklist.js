@@ -23,7 +23,7 @@ const MainboardDisplay = (props) => {
     let deckNodes = mainKeys.map(function(key) {
         let card = props.deck[key];
         return (
-            <div multiverseId={card._id} className="maindeckCard" onmouseover={() => CardMouseover(card._id)}>
+            <div multiverseId={card.multiverseid} className="maindeckCard" onMouseOver={() => CardMouseover(card.multiverseid)}>
                 <h3>{card.copies} {card.name}</h3>
             </div>
         );
@@ -45,7 +45,7 @@ const SideboardDisplay = (props) => {
     let deckNodes = sideKeys.map(function(key) {
         let card = props.side[key];
         return (
-            <div multiverseId={card._id} className="sideboardCard" onmouseover={() => CardMouseover(card._id)}>
+            <div multiverseId={card.multiverseid} className="sideboardCard" onMouseOver={() => CardMouseover(card.multiverseid)}>
                 <h3>{card.copies} {card.name}</h3>
             </div>
         );
@@ -68,6 +68,9 @@ const setup = function(csrf) {
         <SideboardDisplay side={sideboard} />, 
         document.querySelector("#sideboard")
     );
+    
+    //check if logged in
+    
 };
 
 const getDeck= (csrf) => {
@@ -97,6 +100,16 @@ const getDeck= (csrf) => {
 
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
+        //check if logged in
+        if (result.loggedIn){
+            //change login to logout
+            let loginLink = document.getElementById('login');
+            loginLink.textContent = 'Log out';
+            loginLink.href = '/logout';
+            
+            //make logged in tabs visible
+            document.querySelector('#loggedIn').style.display = 'block';
+        }
         getDeck(result.csrfToken);
     });
 };

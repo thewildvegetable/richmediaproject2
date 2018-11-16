@@ -13,19 +13,21 @@
 </head>
 <body>
   <nav>
-    <div class="navlink"><a href="/login">Login</a></div>
-    <div class="navlink"><a href="/remove">Remove Decks</a></div>
-    <div class="navlink"><a href="/maker">Maker</a></div>
-      <div class="navlink"><a href="/">View Decks</a></div>
+    <div class="navlink"><a href="/login" id='login'>Login</a></div>
+    <div id="loggedIn">
+        <div class="navlink"><a href="/remove">Remove Decks</a></div>
+        <div class="navlink"><a href="/maker">Make a Deck</a></div>
+    </div>
+    <div class="navlink"><a href="/">View Decks</a></div>
   </nav>
     <section id="errorMessage"></section>
     <img id='card' src='assets/img/cardBack.jpg' width='223' height='311'>
     <h1 id='deckName'></h1>
-    <h2 id='sectionHeading'>Main</h2>
+    <h2 class='sectionHeading' id='main'>Main</h2>
   <section id="mainboard">
   </section>
     <br>
-    <h2 id='sectionHeading'>Sideboard</h2>
+    <h2 class='sectionHeading' id='side'>Sideboard</h2>
   <section id="sideboard">
   </section>
   <script src="/assets/viewBundle.js"></script>
