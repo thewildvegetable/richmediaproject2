@@ -8,6 +8,7 @@ const router = (app) => {
   app.get('/getDecks', controllers.Deck.getDecks);
   app.get('/getDecksOwner', controllers.Deck.getDecksByOwner);
   app.get('/deck', mid.requiresSecure, controllers.Deck.viewDeckPage);
+  app.get('/getDeck', controllers.Deck.getDeckById);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
   app.get('/maker', mid.requiresLogin, controllers.Deck.makerPage);

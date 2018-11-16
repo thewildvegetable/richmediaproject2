@@ -13,9 +13,9 @@ var ViewDeck = function ViewDeck(e) {
     var csrfField = deckForm.querySelector('.csrfField');
 
     //build our x-www-form-urlencoded format
-    var formData = '_id=' + idField.value + '&_csrf=' + csrfField.value;
+    var formData = '_id=' + idField.value;
 
-    sendAjax('GET', '/deck', formData, function () {});
+    window.location = '/deck?' + formData;
 };
 
 //make the react elements for each deck

@@ -71,6 +71,9 @@ const makeDeck = (req, res, cards, sideboard, errors) => {
     format: 'Standard',
     owner: req.session.account._id,
   };// todo replace format with req.body.format
+    
+    console.dir(deckData.cards);
+    console.dir(deckData.sideboard);
 
   const newDeck = new Deck.DeckModel(deckData);
 
@@ -104,8 +107,6 @@ const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, e
     // seperate it into the # of copies and the name
   const cardName = cardInfo.slice(cardInfo.indexOf(' ')).trim();
   const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
-
-  console.dir(cardName);
 
   mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).then(results => {
     const card = results[0];
@@ -248,15 +249,23 @@ const removerPage = (req, res) => {
   });
 };
 
-const viewDeckPage = (req, res) => {
-  Deck.DeckModel.findById(req.body.deckId, (err, docs) => {
+const getDeckById = (req, res) => {
+    console.dir(req.body);
+    
+  Deck.DeckModel.findById(req.body._id, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
     }
+      
+      console.dir(docs);
 
-    return res.render('view', { csrfToken: req.csrfToken(), deck: docs });
+    return res.json({ deck: docs });
   });
+};
+
+const viewDeckPage = (req, res) => {
+    return res.render('view', { csrfToken: req.csrfToken() });
 };
 
 const getDecksByOwner = (request, response) => {
@@ -320,5 +329,6 @@ module.exports.viewDeckPage = viewDeckPage;
 module.exports.removerPage = removerPage;
 module.exports.remove = removeDeck;
 module.exports.getDecks = getDecks;
+module.exports.getDeckById = getDeckById;
 module.exports.getDecksByOwner = getDecksByOwner;
 module.exports.getDecksByFormat = getDecksByFormat;

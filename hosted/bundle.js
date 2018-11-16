@@ -36,10 +36,10 @@ var DeckForm = function DeckForm(props) {
         React.createElement("input", { id: "deckName", type: "text", name: "name", placeholder: "deck Name" }),
         React.createElement(
             "label",
-            { htmlFor: "age" },
+            { htmlFor: "main" },
             "Mainboard: "
         ),
-        React.createElement("textarea", { id: "deckList", rows: "25", name: "deckList", className: "cardForm", placeholder: "1 Forest" }),
+        React.createElement("textarea", { id: "deckList", rows: "10", name: "deckList", className: "cardForm", placeholder: "1 Forest" }),
         React.createElement(
             "label",
             { htmlFor: "sideboard", id: "sideboard" },

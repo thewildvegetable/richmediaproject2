@@ -1,3 +1,5 @@
+let deck;
+
 //setup the mouseover event
 const CardMouseover = (multiverseId) => {
     //get card image tag
@@ -12,33 +14,68 @@ const CardMouseover = (multiverseId) => {
 
 //display the mainboard
 const MainboardDisplay = (props) => {
-    
+    //setup the mainboard
+    let deckNodes = props.deck.map(function(card) {
+        return (
+            <div multiverseId={card._id} className="maindeckCard" onmouseover={() => CardMouseover(card._id)}>
+                <h3>{card.copies} {card.name}</h3>
+            </div>
+        );
+    });
+
+    return(
+        <div className="deckList">
+            {deckNodes}
+        </div>
+    );
 };
 
 //display the sideboard
 const SideboardDisplay = (props) => {
-    
-};
+    //setup the sideboard
+    let deckNodes = props.side.map(function(card) {
+        return (
+            <div multiverseId={card._id} className="sideboardCard" onmouseover={() => CardMouseover(card._id)}>
+                <h3>{card.copies} {card.name}</h3>
+            </div>
+        );
+    });
 
-const getDeck = () => {
-    
+    return(
+        <div className="sideboardList">
+            {deckNodes}
+        </div>
+    );
 };
 
 const setup = function(csrf) {
+    console.dir(deck);
     ReactDOM.render(
-        <MainboardDisplay csrf={csrf} />, 
+        <MainboardDisplay deck={deck.cards} />, 
         document.querySelector("#mainboard")
     );
     
     ReactDOM.render(
-        <SideboardDisplay csrf={csrf} />, 
+        <SideboardDisplay side={deck.sideboard} />, 
         document.querySelector("#sideboard")
     );
 };
 
+const getDeck= (csrf) => {
+    //get the id from window.location
+    let search = window.location.search;
+    console.dir(search);
+    
+    sendAjax('GET', '/getDeck', search, (result) => {
+        //now get the deck
+        deck = result.deck;
+        setup(csrf);
+    });
+};
+
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
-        setup(result.csrfToken);
+        getDeck(result.csrfToken);
     });
 };
 

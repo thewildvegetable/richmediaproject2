@@ -31,8 +31,6 @@ const DeckList = function(props) {
         return (
             <div key={deck._id} className="deck">
                 <h3 className="deckName">Name: {deck.name} </h3>
-                <h3 className="deckAge">Age: {deck.age} </h3>
-                <h3 className="deckLevel">Level: {deck.level} </h3>
                 <form name="deckForm"
                       onSubmit={removeDeck}
                       action="/remove"

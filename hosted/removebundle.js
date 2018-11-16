@@ -45,20 +45,6 @@ var DeckList = function DeckList(props) {
                 ' '
             ),
             React.createElement(
-                'h3',
-                { className: 'deckAge' },
-                'Age: ',
-                deck.age,
-                ' '
-            ),
-            React.createElement(
-                'h3',
-                { className: 'deckLevel' },
-                'Level: ',
-                deck.level,
-                ' '
-            ),
-            React.createElement(
                 'form',
                 { name: 'deckForm',
                     onSubmit: removeDeck,
