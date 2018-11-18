@@ -80,7 +80,6 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(MainboardDisplay, { deck: mainDeck }), document.querySelector("#mainboardList"));
 
     ReactDOM.render(React.createElement(SideboardDisplay, { side: sideboard }), document.querySelector("#sideboardList"));
-    getAds();
 };
 
 var getDeck = function getDeck(csrf) {

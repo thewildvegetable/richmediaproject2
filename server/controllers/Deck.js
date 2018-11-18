@@ -98,7 +98,6 @@ const makeDeck = (req, res, cards, sideboard, errors) => {
 const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, errors) => {
     // get the card
   const cardInfo = cards[iteration];
-
   const mainDeck = deck;
   const side = sideboard;
   let i = iteration;
@@ -124,9 +123,8 @@ const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, e
         // search
     mtg.card.where(search).then(results => {
       let card = results[0];
-
               // check if multiverseid exists
-      for (let j = 1; i < results.length; i++) {
+      for (let j = 1; j < results.length; j++) {
                   // if the card has a multiverseid break out
         if (card.multiverseid) {
           break;
@@ -160,7 +158,7 @@ const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, e
       let card = results[0];
 
           // check if multiverseid exists
-      for (let j = 1; i < results.length; i++) {
+      for (let j = 1; j < results.length; j++) {
               // if the card has a multiverseid break out
         if (card.multiverseid) {
           break;

@@ -68,7 +68,6 @@ const setup = function(csrf) {
         <SideboardDisplay side={sideboard} />, 
         document.querySelector("#sideboardList")
     );
-    getAds();
 };
 
 const getDeck= (csrf) => {
