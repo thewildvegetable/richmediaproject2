@@ -335,7 +335,7 @@ h3.deckLevel {
     display: none;
 }
 
-#deckName {
+#deckListName {
     margin-left: 45%;
 }
 
@@ -353,7 +353,7 @@ h3.deckLevel {
     margin-left: 10px;
 }
 
-#mainboard{
+#mainboardList{
     clear:left;
     margin-left: 10%;
     float: left;
@@ -366,7 +366,7 @@ h3.deckLevel {
     float: left;
 }
 
-#sideboard{
+#sideboardList{
     clear:right;
     float: right;
     margin-right: 21%;
