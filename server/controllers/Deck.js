@@ -106,48 +106,99 @@ const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, e
     // seperate it into the # of copies and the name
   const cardName = cardInfo.slice(cardInfo.indexOf(' ')).trim();
   const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
+    
+    //if card name is a split card (ie name contains //)
+    //get all cards and add the one with layout of split
+    if (cardName.indexOf('//') !== -1){
+        //get front card
+        const splitCardName = cardName.slice(0, cardName.indexOf('//')).trim();
+        
+        //search term
+        const search = { 
+            name: splitCardName,
+            page: 1,
+            pageSize: 50,
+            layout: "split" 
+        };
+        
+        //search
+        mtg.card.where(search).then(results => {
+            let card = results[0];
 
-  mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).then(results => {
-    let card = results[0];
-      
-      //check if multiverseid exists
-      for (let i = 1; i < results.length; i++){
-          //if the card has a multiverseid break out
-          if (card.multiverseid){
-              break;
+              //check if multiverseid exists
+              for (let i = 1; i < results.length; i++){
+                  //if the card has a multiverseid break out
+                  if (card.multiverseid){
+                      break;
+                  }
+                  //get next card
+                  card = results[i];
+              }
+            
+            //make cardname the split card name
+            card.name = cardName;
+
+            card.copies = numCopies;
+
+            // if this iteration is still in the main deck
+            // add it to the main deck, otherwise sideboard it
+            if (i < mainDeckSize) {
+              mainDeck[card.name] = card;
+            } else {
+              side[card.name] = card;
+            }
+
+            if (i >= cards.length - 1) {
+              makeDeck(req, res, mainDeck, side, errors);
+            } else {
+              i++;
+              cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+            }
+          });
+    }
+    else{
+        mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).then(results => {
+        let card = results[0];
+
+          //check if multiverseid exists
+          for (let i = 1; i < results.length; i++){
+              //if the card has a multiverseid break out
+              if (card.multiverseid){
+                  break;
+              }
+              //get next card
+              card = results[i];
           }
-          //get next card
-          card = results[i];
-      }
-      
-    card.copies = numCopies;
 
-    // if this iteration is still in the main deck
-    // add it to the main deck, otherwise sideboard it
-    if (i < mainDeckSize) {
-      mainDeck[card.name] = card;
-    } else {
-      side[card.name] = card;
-    }
+        card.copies = numCopies;
 
-    if (i >= cards.length - 1) {
-      makeDeck(req, res, mainDeck, side, errors);
-    } else {
-      i++;
-      cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
-    }
-  });
+        // if this iteration is still in the main deck
+        // add it to the main deck, otherwise sideboard it
+        if (i < mainDeckSize) {
+          mainDeck[card.name] = card;
+        } else {
+          side[card.name] = card;
+        }
 
-  mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).catch((err) => {
-    console.log(err);
-    errors.push(cardName);
-    if (i >= cards.length - 1) {
-      makeDeck(req, res, mainDeck, side, mainDeckSize, errors);
-    } else {
-      i++;
-      cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+        if (i >= cards.length - 1) {
+          makeDeck(req, res, mainDeck, side, errors);
+        } else {
+          i++;
+          cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+        }
+      });
+
+      mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).catch((err) => {
+        console.log(err);
+        errors.push(cardName);
+        if (i >= cards.length - 1) {
+          makeDeck(req, res, mainDeck, side, mainDeckSize, errors);
+        } else {
+          i++;
+          cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+        }
+      });
     }
-  });
 };
 
 const getCards = (req, res) => {
