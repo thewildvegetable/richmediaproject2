@@ -339,10 +339,6 @@ h3.deckLevel {
     margin-left: 45%;
 }
 
-.sectionHeading{
-    
-}
-
 .mainDeckCard{
     width: 300px;
     margin-left: 10px;
@@ -377,4 +373,9 @@ h3.deckLevel {
 #side{
     float: right;
     margin-right: 27%;
+}
+
+#errorMessage{
+    margin: 0 auto;
+    text-align: center;
 }

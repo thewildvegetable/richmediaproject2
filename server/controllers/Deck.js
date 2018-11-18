@@ -173,9 +173,16 @@ const getCards = (req, res) => {
 
         // if indexOf and LastIndexOf arent the same, there's a duplicate
     if (req.body.deckList.indexOf(cardName) !== req.body.deckList.lastIndexOf(cardName)) {
-      let message = `${cardName} is present more than once in the decklist.`;
-      message += ' Please combine it into 1 line';
-      return res.status(400).json({ error: message });
+        //check to make sure its not a card with another card in its name
+        //2 spaces away in the string, aka what is a number if this is a repeat
+        let start = req.body.deckList.lastIndexOf(cardName) - 2;    
+        let previousTwoChars = req.body.deckList.slice(start, start+2);
+        let isItANumber = parseInt(previousTwoChars, 10);
+        if (isItANumber > 0){
+            let message = `${cardName} is present more than once in the decklist.`;
+            message += ' Please combine it into 1 line';
+            return res.status(400).json({ error: message });
+        }
     }
   }
   const mainDeckSize = cards.length;    // last entry of the maindeck
@@ -186,9 +193,16 @@ const getCards = (req, res) => {
 
         // if indexOf and LastIndexOf arent the same, there's a duplicate
     if (req.body.sideboard.indexOf(cardName) !== req.body.sideboard.lastIndexOf(cardName)) {
-      let message = 'At least 1 card is present more than once in the sideboard.';
-      message += ' Please combine them into 1 line';
-      return res.status(400).json({ error: message });
+      //check to make sure its not a card with another card in its name
+        //2 spaces away in the string, aka what is a number if this is a repeat
+        let start = req.body.sideboard.lastIndexOf(cardName) - 2;    
+        let previousTwoChars = req.body.sideboard.slice(start, start+2);
+        let isItANumber = parseInt(previousTwoChars, 10);
+        if (isItANumber > 0){
+            let message = `${cardName} is present more than once in the sideboard.`;
+            message += ' Please combine it into 1 line';
+            return res.status(400).json({ error: message });
+        }
     }
 
     cards.push(sideboard[i]);
