@@ -173,8 +173,8 @@ const getCards = (req, res) => {
 
         // if indexOf and LastIndexOf arent the same, there's a duplicate
     if (req.body.deckList.indexOf(cardName) !== req.body.deckList.lastIndexOf(cardName)) {
-      let message = 'At least 1 card is present more than once in the decklist.';
-      message += ' Please combine them into 1 line';
+      let message = `${cardName} is present more than once in the decklist.`;
+      message += ' Please combine it into 1 line';
       return res.status(400).json({ error: message });
     }
   }
