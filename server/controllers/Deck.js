@@ -106,99 +106,98 @@ const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, e
     // seperate it into the # of copies and the name
   const cardName = cardInfo.slice(cardInfo.indexOf(' ')).trim();
   const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
-    
-    //if card name is a split card (ie name contains //)
-    //get all cards and add the one with layout of split
-    if (cardName.indexOf('//') !== -1){
-        //get front card
-        const splitCardName = cardName.slice(0, cardName.indexOf('//')).trim();
-        
-        //search term
-        const search = { 
-            name: splitCardName,
-            page: 1,
-            pageSize: 50,
-            layout: "split" 
-        };
-        
-        //search
-        mtg.card.where(search).then(results => {
-            let card = results[0];
 
-              //check if multiverseid exists
-              for (let i = 1; i < results.length; i++){
-                  //if the card has a multiverseid break out
-                  if (card.multiverseid){
-                      break;
-                  }
-                  //get next card
-                  card = results[i];
-              }
-            
-            //make cardname the split card name
-            card.name = cardName;
+    // if card name is a split card (ie name contains //)
+    // get all cards and add the one with layout of split
+  if (cardName.indexOf('//') !== -1) {
+        // get front card
+    const splitCardName = cardName.slice(0, cardName.indexOf('//')).trim();
 
-            card.copies = numCopies;
+        // search term
+    const search = {
+      name: splitCardName,
+      page: 1,
+      pageSize: 50,
+      layout: 'split',
+    };
+
+        // search
+    mtg.card.where(search).then(results => {
+      let card = results[0];
+
+              // check if multiverseid exists
+      for (let j = 1; i < results.length; i++) {
+                  // if the card has a multiverseid break out
+        if (card.multiverseid) {
+          break;
+        }
+                  // get next card
+        card = results[j];
+      }
+
+            // make cardname the split card name
+      card.name = cardName;
+
+      card.copies = numCopies;
 
             // if this iteration is still in the main deck
             // add it to the main deck, otherwise sideboard it
-            if (i < mainDeckSize) {
-              mainDeck[card.name] = card;
-            } else {
-              side[card.name] = card;
-            }
+      if (i < mainDeckSize) {
+        mainDeck[card.name] = card;
+      } else {
+        side[card.name] = card;
+      }
 
-            if (i >= cards.length - 1) {
-              makeDeck(req, res, mainDeck, side, errors);
-            } else {
-              i++;
-              cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
-            }
-          });
-    }
-    else{
-        mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).then(results => {
-        let card = results[0];
+      if (i >= cards.length - 1) {
+        makeDeck(req, res, mainDeck, side, errors);
+      } else {
+        i++;
+        cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+      }
+    });
+  } else {
+    mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).then(results => {
+      let card = results[0];
 
-          //check if multiverseid exists
-          for (let i = 1; i < results.length; i++){
-              //if the card has a multiverseid break out
-              if (card.multiverseid){
-                  break;
-              }
-              //get next card
-              card = results[i];
-          }
+          // check if multiverseid exists
+      for (let j = 1; i < results.length; i++) {
+              // if the card has a multiverseid break out
+        if (card.multiverseid) {
+          break;
+        }
+              // get next card
+        card = results[j];
+      }
 
-        card.copies = numCopies;
+      card.copies = numCopies;
 
         // if this iteration is still in the main deck
         // add it to the main deck, otherwise sideboard it
-        if (i < mainDeckSize) {
-          mainDeck[card.name] = card;
-        } else {
-          side[card.name] = card;
-        }
+      if (i < mainDeckSize) {
+        mainDeck[card.name] = card;
+      } else {
+        side[card.name] = card;
+      }
 
-        if (i >= cards.length - 1) {
-          makeDeck(req, res, mainDeck, side, errors);
-        } else {
-          i++;
-          cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
-        }
-      });
+      if (i >= cards.length - 1) {
+        makeDeck(req, res, mainDeck, side, errors);
+      } else {
+        i++;
+        cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+      }
+    });
 
-      mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).catch((err) => {
-        console.log(err);
-        errors.push(cardName);
-        if (i >= cards.length - 1) {
-          makeDeck(req, res, mainDeck, side, mainDeckSize, errors);
-        } else {
-          i++;
-          cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
-        }
-      });
-    }
+    mtg.card.where({ name: cardName, page: 1, pageSize: 50 }).catch((err) => {
+      console.log(err);
+      errors.push(cardName);
+      if (i >= cards.length - 1) {
+        makeDeck(req, res, mainDeck, side, mainDeckSize, errors);
+      } else {
+        i++;
+        cardSearch(req, res, i, cards, mainDeck, side, mainDeckSize, errors);
+      }
+    });
+  }
 };
 
 const getCards = (req, res) => {
@@ -224,16 +223,16 @@ const getCards = (req, res) => {
 
         // if indexOf and LastIndexOf arent the same, there's a duplicate
     if (req.body.deckList.indexOf(cardName) !== req.body.deckList.lastIndexOf(cardName)) {
-        //check to make sure its not a card with another card in its name
-        //2 spaces away in the string, aka what is a number if this is a repeat
-        let start = req.body.deckList.lastIndexOf(cardName) - 2;    
-        let previousTwoChars = req.body.deckList.slice(start, start+2);
-        let isItANumber = parseInt(previousTwoChars, 10);
-        if (isItANumber > 0){
-            let message = `${cardName} is present more than once in the decklist.`;
-            message += ' Please combine it into 1 line';
-            return res.status(400).json({ error: message });
-        }
+        // check to make sure its not a card with another card in its name
+        // 2 spaces away in the string, aka what is a number if this is a repeat
+      const start = req.body.deckList.lastIndexOf(cardName) - 2;
+      const previousTwoChars = req.body.deckList.slice(start, start + 2);
+      const isItANumber = parseInt(previousTwoChars, 10);
+      if (isItANumber > 0) {
+        let message = `${cardName} is present more than once in the decklist.`;
+        message += ' Please combine it into 1 line';
+        return res.status(400).json({ error: message });
+      }
     }
   }
   const mainDeckSize = cards.length;    // last entry of the maindeck
@@ -244,16 +243,16 @@ const getCards = (req, res) => {
 
         // if indexOf and LastIndexOf arent the same, there's a duplicate
     if (req.body.sideboard.indexOf(cardName) !== req.body.sideboard.lastIndexOf(cardName)) {
-      //check to make sure its not a card with another card in its name
-        //2 spaces away in the string, aka what is a number if this is a repeat
-        let start = req.body.sideboard.lastIndexOf(cardName) - 2;    
-        let previousTwoChars = req.body.sideboard.slice(start, start+2);
-        let isItANumber = parseInt(previousTwoChars, 10);
-        if (isItANumber > 0){
-            let message = `${cardName} is present more than once in the sideboard.`;
-            message += ' Please combine it into 1 line';
-            return res.status(400).json({ error: message });
-        }
+      // check to make sure its not a card with another card in its name
+        // 2 spaces away in the string, aka what is a number if this is a repeat
+      const start = req.body.sideboard.lastIndexOf(cardName) - 2;
+      const previousTwoChars = req.body.sideboard.slice(start, start + 2);
+      const isItANumber = parseInt(previousTwoChars, 10);
+      if (isItANumber > 0) {
+        let message = `${cardName} is present more than once in the sideboard.`;
+        message += ' Please combine it into 1 line';
+        return res.status(400).json({ error: message });
+      }
     }
 
     cards.push(sideboard[i]);

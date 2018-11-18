@@ -42,16 +42,16 @@ const login = (request, response) => {
 const getToken = (request, response) => {
   const req = request;
   const res = response;
-    
-    //tell the client if they are logged in
-    let loggedIn=false;
-    if (req.session.account){
-        loggedIn = true;
-    }
+
+    // tell the client if they are logged in
+  let loggedIn = false;
+  if (req.session.account) {
+    loggedIn = true;
+  }
 
   const csrfJSON = {
     csrfToken: req.csrfToken(),
-      loggedIn: loggedIn,
+    loggedIn,
   };
 
   res.json(csrfJSON);
@@ -102,11 +102,10 @@ const signup = (request, response) => {
   });
 };
 
-//send ads to the user on connection
+// send ads to the user on connection
 const getAds = (request, response) => {
-    const req = request;
   const res = response;
-    
+
   const ads = {};
 
   // determine ad 1
@@ -116,9 +115,9 @@ const getAds = (request, response) => {
   // determine ad 2
   randNum = Math.floor(Math.random() * 5) + 6; // 6 to 10
   ads.ad2 = `ad${randNum}.png`;
-    
-    return res.json(ads);
-}
+
+  return res.json(ads);
+};
 
 module.exports.loginPage = loginPage;
 module.exports.allDecksPage = allDecksPage;
