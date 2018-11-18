@@ -53,6 +53,7 @@ var DeckForm = function DeckForm(props) {
 
 var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(DeckForm, { csrf: csrf }), document.querySelector("#makeDeck"));
+    getAds();
 };
 
 var getToken = function getToken() {
@@ -87,5 +88,20 @@ var sendAjax = function sendAjax(type, action, data, success) {
             var messageObj = JSON.parse(xhr.responseText);
             handleError(messageObj.error);
         }
+    });
+};
+
+var getAds = function getAds() {
+    sendAjax('GET', '/getAds', null, function (data) {
+        //get the 2 ad containers
+        var ad1Img = document.getElementById('ad1');
+        var ad2Img = document.getElementById('ad2');
+
+        //change their srcs
+        ad1Img.src = "/assets/ads/" + data.ad1;
+        ad2Img.src = "/assets/ads/" + data.ad2;
+
+        //reposition ad2
+        //ad2Img.top = document.height - ad2Img.height;
     });
 };

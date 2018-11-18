@@ -59,7 +59,7 @@ const DeckList = function(props) {
     }
     
     //seperate out the first 20 decks to put on page 1
-    const displayDecks = deckNodes.slice(0, 20);
+    const displayDecks = deckNodes.slice(0, 19);
     
     return(
         <div className="deckList">
@@ -102,8 +102,8 @@ const MoveNewPage = (num) => {
     nextButton.style.display = 'block';
     
     //seperate out the 20 decks on the new page
-    let start = 21 * (pageNum-1);
-    let end = 20 * pageNum;
+    let start = 20 * (pageNum-1);
+    let end = 19 * pageNum;
     const displayDecks = deckNodes.slice(start, end);
     
     //render the new page
@@ -129,7 +129,7 @@ const setup = function(csrf) {
         <deckForm csrf={csrf} />,
         document.querySelector("#decks")
     );
-    
+    getAds();
     //get the next button and the previous button
     previousButton = document.getElementById('previous');
     nextButton = document.getElementById('next');

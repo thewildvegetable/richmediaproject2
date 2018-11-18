@@ -379,3 +379,17 @@ h3.deckLevel {
     margin: 0 auto;
     text-align: center;
 }
+
+#ad1{
+    float: left;
+    width: 128px;
+    height: 500px;
+    padding-left: 20px;
+}
+
+#ad2{
+    margin-left: 32%;
+    margin-top: 50px;
+    height: 128px;
+    width: 700px;
+}

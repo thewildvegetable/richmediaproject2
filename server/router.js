@@ -5,6 +5,7 @@ const router = (app) => {
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
+  app.get('/getAds', mid.requiresSecure, controllers.Account.getAds);
   app.get('/getDecks', controllers.Deck.getDecks);
   app.get('/getDecksOwner', controllers.Deck.getDecksByOwner);
   app.get('/deck', mid.requiresSecure, controllers.Deck.viewDeckPage);

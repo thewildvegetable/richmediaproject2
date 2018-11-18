@@ -80,6 +80,7 @@ var setup = function setup(csrf) {
     ReactDOM.render(React.createElement(MainboardDisplay, { deck: mainDeck }), document.querySelector("#mainboardList"));
 
     ReactDOM.render(React.createElement(SideboardDisplay, { side: sideboard }), document.querySelector("#sideboardList"));
+    getAds();
 };
 
 var getDeck = function getDeck(csrf) {
@@ -149,5 +150,20 @@ var sendAjax = function sendAjax(type, action, data, success) {
             var messageObj = JSON.parse(xhr.responseText);
             handleError(messageObj.error);
         }
+    });
+};
+
+var getAds = function getAds() {
+    sendAjax('GET', '/getAds', null, function (data) {
+        //get the 2 ad containers
+        var ad1Img = document.getElementById('ad1');
+        var ad2Img = document.getElementById('ad2');
+
+        //change their srcs
+        ad1Img.src = "/assets/ads/" + data.ad1;
+        ad2Img.src = "/assets/ads/" + data.ad2;
+
+        //reposition ad2
+        //ad2Img.top = document.height - ad2Img.height;
     });
 };

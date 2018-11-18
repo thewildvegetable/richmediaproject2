@@ -102,9 +102,28 @@ const signup = (request, response) => {
   });
 };
 
+//send ads to the user on connection
+const getAds = (request, response) => {
+    const req = request;
+  const res = response;
+    
+  const ads = {};
+
+  // determine ad 1
+  let randNum = Math.floor(Math.random() * 5) + 1; // 1 to 5
+  ads.ad1 = `ad${randNum}.png`;
+
+  // determine ad 2
+  randNum = Math.floor(Math.random() * 5) + 6; // 6 to 10
+  ads.ad2 = `ad${randNum}.png`;
+    
+    return res.json(ads);
+}
+
 module.exports.loginPage = loginPage;
 module.exports.allDecksPage = allDecksPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
+module.exports.getAds = getAds;

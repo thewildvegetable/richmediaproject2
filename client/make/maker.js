@@ -44,6 +44,7 @@ const setup = function(csrf) {
         <DeckForm csrf={csrf} />, 
         document.querySelector("#makeDeck")
     );
+    getAds();
 };
 
 const getToken = () => {

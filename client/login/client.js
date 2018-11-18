@@ -102,7 +102,7 @@ const setup = (csrf) => {
         createLoginWindow(csrf);
         return false;
     });
-    
+    getAds();
     createLoginWindow(csrf);
 };
 

@@ -132,7 +132,7 @@ var loadDecksFromServer = function loadDecksFromServer() {
 //setup the react page
 var setup = function setup(csrf) {
     ReactDOM.render(React.createElement('deckForm', { csrf: csrf }), document.querySelector("#decks"));
-
+    getAds();
     //get the next button and the previous button
     previousButton = document.getElementById('previous');
     nextButton = document.getElementById('next');
@@ -193,5 +193,20 @@ var sendAjax = function sendAjax(type, action, data, success) {
             var messageObj = JSON.parse(xhr.responseText);
             handleError(messageObj.error);
         }
+    });
+};
+
+var getAds = function getAds() {
+    sendAjax('GET', '/getAds', null, function (data) {
+        //get the 2 ad containers
+        var ad1Img = document.getElementById('ad1');
+        var ad2Img = document.getElementById('ad2');
+
+        //change their srcs
+        ad1Img.src = "/assets/ads/" + data.ad1;
+        ad2Img.src = "/assets/ads/" + data.ad2;
+
+        //reposition ad2
+        //ad2Img.top = document.height - ad2Img.height;
     });
 };

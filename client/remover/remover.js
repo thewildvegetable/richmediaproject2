@@ -65,8 +65,8 @@ const loadDecksFromServer = () => {
 const setup = function(csrfToken) {
     console.dir(csrfToken);
     csrf = csrfToken;
-    console.dir(csrf);
     
+    getAds();
     ReactDOM.render(
         <DeckList decks={[]} />, 
         document.querySelector("#decks")

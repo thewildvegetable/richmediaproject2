@@ -21,3 +21,18 @@ const sendAjax = (type, action, data, success) => {
         }
     });
 };
+
+const getAds = () => {
+    sendAjax('GET', '/getAds', null, (data) => {
+        //get the 2 ad containers
+        let ad1Img = document.getElementById('ad1');
+        let ad2Img = document.getElementById('ad2');
+        
+        //change their srcs
+        ad1Img.src = `/assets/ads/${data.ad1}`;
+        ad2Img.src = `/assets/ads/${data.ad2}`;
+        
+        //reposition ad2
+        //ad2Img.top = document.height - ad2Img.height;
+    });
+};
