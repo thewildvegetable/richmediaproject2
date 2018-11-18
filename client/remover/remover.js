@@ -54,7 +54,7 @@ const DeckList = function(props) {
 };
 
 const loadDecksFromServer = () => {
-    sendAjax('GET', '/getDecks', null, (data) => {
+    sendAjax('GET', '/getDecksOwner', null, (data) => {
         ReactDOM.render(
             <DeckList decks={data.decks} />,
             document.querySelector("#decks")

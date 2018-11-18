@@ -66,6 +66,10 @@ var DeckList = function DeckList(props) {
     //get max number of pages
     maxPageNum = Math.ceil(deckNodes.length / 20.0);
 
+    if (maxPageNum === 1) {
+        document.getElementById("deckPages").style.display = 'none';
+    }
+
     //seperate out the first 20 decks to put on page 1
     var displayDecks = deckNodes.slice(0, 19);
 

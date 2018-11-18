@@ -67,7 +67,7 @@ var DeckList = function DeckList(props) {
 };
 
 var loadDecksFromServer = function loadDecksFromServer() {
-    sendAjax('GET', '/getDecks', null, function (data) {
+    sendAjax('GET', '/getDecksOwner', null, function (data) {
         ReactDOM.render(React.createElement(DeckList, { decks: data.decks }), document.querySelector("#decks"));
     });
 };

@@ -61,16 +61,13 @@ const SideboardDisplay = (props) => {
 const setup = function(csrf) {
     ReactDOM.render(
         <MainboardDisplay deck={mainDeck} />, 
-        document.querySelector("#mainboard")
+        document.querySelector("#mainboardList")
     );
     
     ReactDOM.render(
         <SideboardDisplay side={sideboard} />, 
-        document.querySelector("#sideboard")
+        document.querySelector("#sideboardList")
     );
-    
-    //check if logged in
-    
 };
 
 const getDeck= (csrf) => {
@@ -83,7 +80,7 @@ const getDeck= (csrf) => {
         deck = result.deck[0];
         
         //set the name
-        document.getElementById('deckName').textContent = deck.name;
+        document.getElementById('deckListName').textContent = deck.name;
         
         console.dir(deck);
         

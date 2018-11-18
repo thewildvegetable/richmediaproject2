@@ -77,11 +77,9 @@ var SideboardDisplay = function SideboardDisplay(props) {
 };
 
 var setup = function setup(csrf) {
-    ReactDOM.render(React.createElement(MainboardDisplay, { deck: mainDeck }), document.querySelector("#mainboard"));
+    ReactDOM.render(React.createElement(MainboardDisplay, { deck: mainDeck }), document.querySelector("#mainboardList"));
 
-    ReactDOM.render(React.createElement(SideboardDisplay, { side: sideboard }), document.querySelector("#sideboard"));
-
-    //check if logged in
+    ReactDOM.render(React.createElement(SideboardDisplay, { side: sideboard }), document.querySelector("#sideboardList"));
 };
 
 var getDeck = function getDeck(csrf) {
@@ -94,7 +92,7 @@ var getDeck = function getDeck(csrf) {
         deck = result.deck[0];
 
         //set the name
-        document.getElementById('deckName').textContent = deck.name;
+        document.getElementById('deckListName').textContent = deck.name;
 
         console.dir(deck);
 
