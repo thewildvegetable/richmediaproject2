@@ -5,7 +5,7 @@ const url = require('url');
 
 const Deck = models.Deck;
 
-/* const PlaysetRule = {
+const PlaysetRule = {
   Commander: 1,
   Standard: 4,
   Modern: 4,
@@ -27,7 +27,7 @@ const IgnorePlayset = {
   'Relentless Rats': true,
   'Rat Colony': true,
   'Shadowborn Apostle': true,
-};  // all the cards that can break the playset rule*/
+};  // all the cards that can break the playset rule
 
 const makeDeck = (req, res, cards, sideboard, errors) => {
   // if there are any errors, tell the user
@@ -268,14 +268,19 @@ const getCards = (req, res) => {
 };
 
 // check that the list given fits all the rules
-/* const checkRules = (req, res, cards, sideboard) => {
-    // get the card for npm test
-  const cardInfo = cards[0];
-  const cardName = cardInfo;    // replace with actual info later
+const checkRules = (req, res, cards, sideboard) => {
+  //get the keys for main and sideboard
+    let mainKeys = Object.keys(cards);
+    let sideKeys = Object.keys(sideboard);
 
-  for (let i = 0; i < cards.length; i++) {
+  for (let i = 0; i < mainKeys.length; i++) {
+      let card = cards[mainKeys[i]];    //get the card
         // check the playset rule todo add handling of sideboard as well
-    const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
+    let numCopies = card.copies;
+      //if its in the sideboard add the copies
+      if (sideboard[card.name]){
+          numCopies += sideboard[card.name].copies;
+      }
         // todo change from standard to req.body.format and to add the sideboard copies
     if (numCopies > PlaysetRule.Standard) {
             // check that the card isnt 1 of the cards that ignore the playset rule
@@ -287,11 +292,27 @@ const getCards = (req, res) => {
     }
 
         // legality check here
+      if (card.legalities){
+          for (let j = 0; j < card.legalities.length; j++){
+              //check that this entry is the format this deck is for
+              if (card.legalities[j].format === req.body.format){
+                  //check if the card is legal in this format
+                  if (card.legalities[j].legality !== "Legal"){
+                      let message = `${cardName} is not legal in`;
+                      message += ` ${card.legalities[j].format}`;
+                      return res.status(400).json({ error: message });
+                  }
+              }
+          }
+      }
+      //if card.legalities doesnt exist, the card is standard legal
+      //and thus legal everywhere
   }
 
   for (let i = 0; i < sideboard.length; i++) {
+    let card = sideboard[sideKeys[i]];    //get the card
         // check the playset rule todo add handling of sideboard as well
-    const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
+    let numCopies = card.copies;
         // todo change from standard to req.body.format and to add the sideboard copies
     if (numCopies > PlaysetRule.Standard) {
             // check that the card isnt 1 of the cards that ignore the playset rule
@@ -302,11 +323,26 @@ const getCards = (req, res) => {
       }
     }
 
-        // legality check here
+       // legality check here
+      if (card.legalities){
+          for (let j = 0; j < card.legalities.length; j++){
+              //check that this entry is the format this deck is for
+              if (card.legalities[j].format === req.body.format){
+                  //check if the card is legal in this format
+                  if (card.legalities[j].legality !== "Legal"){
+                      let message = `${cardName} is not legal in`;
+                      message += ` ${card.legalities[j].format}`;
+                      return res.status(400).json({ error: message });
+                  }
+              }
+          }
+      }
+      //if card.legalities doesnt exist, the card is standard legal
+      //and thus legal everywhere
   }
 
   return 1; //handling npm test error
-};*/
+};
 
 const makerPage = (req, res) => res.render('make', { csrfToken: req.csrfToken() });
 
