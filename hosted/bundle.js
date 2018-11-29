@@ -36,6 +36,40 @@ var DeckForm = function DeckForm(props) {
         React.createElement("input", { id: "deckName", type: "text", name: "name", placeholder: "deck Name" }),
         React.createElement(
             "label",
+            { htmlFor: "format" },
+            "Format: "
+        ),
+        React.createElement(
+            "select",
+            { id: "format", name: "format" },
+            React.createElement(
+                "option",
+                { value: "Standard" },
+                "Standard"
+            ),
+            React.createElement(
+                "option",
+                { value: "Modern" },
+                "Modern"
+            ),
+            React.createElement(
+                "option",
+                { value: "Legacy" },
+                "Legacy"
+            ),
+            React.createElement(
+                "option",
+                { value: "Vintage" },
+                "Vintage"
+            ),
+            React.createElement(
+                "option",
+                { value: "Commander" },
+                "Commander"
+            )
+        ),
+        React.createElement(
+            "label",
             { htmlFor: "main" },
             "Mainboard: "
         ),

@@ -49,7 +49,7 @@ nav:nth-child(1) {
 
 .deckForm {
     border: 2px solid #338acc;
-    width: 1500px;
+    width: 100%;
     margin-top:0px;
     padding-top:10px;
     left: 30%;
@@ -94,6 +94,7 @@ nav:nth-child(1) {
 .makeDeckSubmit {
     transition: background-color 0.4s ease;
     display: inline;
+    position: relative;
     width: 90px;
     background-color: #55acee;
     border-radius: 2px;
@@ -388,8 +389,12 @@ h3.deckLevel {
 }
 
 #ad2{
-    margin-left: 32%;
+    margin-left: 22%;
     margin-top: 50px;
     height: 128px;
     width: 700px;
+}
+
+#format{
+    float: left;
 }

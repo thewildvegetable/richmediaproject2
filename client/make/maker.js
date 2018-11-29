@@ -29,11 +29,11 @@ const DeckForm = (props) => {
             <input id="deckName" type="text" name="name" placeholder="deck Name" />
             <label htmlFor="format">Format: </label>
             <select id='format' name='format'>
-                <option value="standard">Standard</option>
-                <option value="modern">Modern</option>
-                <option value="legacy">Legacy</option>
-                <option value="vintage">Vintage</option>
-                <option value="commander">Commander</option>
+                <option value="Standard">Standard</option>
+                <option value="Modern">Modern</option>
+                <option value="Legacy">Legacy</option>
+                <option value="Vintage">Vintage</option>
+                <option value="Commander">Commander</option>
             </select>
             <label htmlFor="main">Mainboard: </label>
             <textarea id="deckList" rows="10" name="deckList" className="cardForm" placeholder="1 Forest"></textarea>

@@ -64,35 +64,37 @@ const makeDeck = (req, res, cards, sideboard, errors) => {
   }
 
   // check that everything follows the rules
-  // checkRules(req, res, cards, sideboard);
+  if(checkRules(req, res, cards, sideboard) === true){
 
-  const deckData = {
-    name: req.body.name,
-    cards: JSON.stringify(cards),
-    sideboard: JSON.stringify(sideboard),
-    format: 'Standard',
-    owner: req.session.account._id,
-  };// todo replace format with req.body.format
+      const deckData = {
+        name: req.body.name,
+        cards: JSON.stringify(cards),
+        sideboard: JSON.stringify(sideboard),
+        format: 'Standard',
+        owner: req.session.account._id,
+      };// todo replace format with req.body.format
 
-  const newDeck = new Deck.DeckModel(deckData);
+      const newDeck = new Deck.DeckModel(deckData);
 
-  const deckPromise = newDeck.save();
+      const deckPromise = newDeck.save();
 
-  deckPromise.then(() => {
-    console.dir('deck added');
-    res.json({ redirect: '/' });
-  });
+      deckPromise.then(() => {
+        console.dir('deck added');
+        res.json({ redirect: '/' });
+      });
 
-  deckPromise.catch((err) => {
-    console.log(err);
-    if (err.code === 11000) {
-      return res.status(400).json({ error: 'Deck already exists' });
-    }
+      deckPromise.catch((err) => {
+        console.log(err);
+        if (err.code === 11000) {
+          return res.status(400).json({ error: 'Deck already exists' });
+        }
 
-    return res.status(400).json({ error: 'An error occurred' });
-  });
+        return res.status(400).json({ error: 'An error occurred' });
+      });
 
-  return deckPromise;
+        return deckPromise;
+  }
+    return;
 };
 
 const cardSearch = (req, res, iteration, cards, deck, sideboard, mainDeckSize, errors) => {
@@ -269,79 +271,107 @@ const getCards = (req, res) => {
 
 // check that the list given fits all the rules
 const checkRules = (req, res, cards, sideboard) => {
-  //get the keys for main and sideboard
-    let mainKeys = Object.keys(cards);
-    let sideKeys = Object.keys(sideboard);
+  // get the keys for main and sideboard
+  const mainKeys = Object.keys(cards);
+  const sideKeys = Object.keys(sideboard);
 
   for (let i = 0; i < mainKeys.length; i++) {
-      let card = cards[mainKeys[i]];    //get the card
+    const card = cards[mainKeys[i]];    // get the card
         // check the playset rule todo add handling of sideboard as well
     let numCopies = card.copies;
-      //if its in the sideboard add the copies
-      if (sideboard[card.name]){
-          numCopies += sideboard[card.name].copies;
-      }
+      // if its in the sideboard add the copies
+    if (sideboard[card.name]) {
+      numCopies += sideboard[card.name].copies;
+    }
+      
         // todo change from standard to req.body.format and to add the sideboard copies
     if (numCopies > PlaysetRule.Standard) {
             // check that the card isnt 1 of the cards that ignore the playset rule
-      if (!IgnorePlayset[cardName]) {
-        let message = `Too many copies of ${cardName} and possibly`;
+      if (!IgnorePlayset[card.name]) {
+        let message = `Too many copies of ${card.name} and possibly`;
         message += ' other cards as well';
         return res.status(400).json({ error: message });
       }
     }
 
         // legality check here
-      if (card.legalities){
-          for (let j = 0; j < card.legalities.length; j++){
-              //check that this entry is the format this deck is for
-              if (card.legalities[j].format === req.body.format){
-                  //check if the card is legal in this format
-                  if (card.legalities[j].legality !== "Legal"){
-                      let message = `${cardName} is not legal in`;
-                      message += ` ${card.legalities[j].format}`;
-                      return res.status(400).json({ error: message });
-                  }
-              }
+    if (card.legalities) {
+        //checker to verify the card has a legality ruling for the format
+        let legalInFormat = false;
+      for (let j = 0; j < card.legalities.length; j++) {
+              // check that this entry is the format this deck is for
+        if (card.legalities[j].format === req.body.format) {
+            legalInFormat = true;
+            
+                  // check if the card is legal in this format
+          if (card.legalities[j].legality !== 'Legal') {
+            let message = `${card.name} is not legal in`;
+            message += ` ${card.legalities[j].format}`;
+            return res.status(400).json({ error: message });
           }
+        }
       }
-      //if card.legalities doesnt exist, the card is standard legal
-      //and thus legal everywhere
+        //check that the format being checked for was found in
+        //the legality list
+        if (!legalInFormat){
+            //format wasn't found, so error
+            let message = `${card.name} is not legal in`;
+            message += ` ${req.body.format}`;
+            return res.status(400).json({ error: message });
+        }
+    }
+      // if card.legalities doesnt exist, the card is standard legal
+      // and thus legal everywhere
   }
-
-  for (let i = 0; i < sideboard.length; i++) {
-    let card = sideboard[sideKeys[i]];    //get the card
+console.dir('checking sideboard');
+  for (let i = 0; i < sideKeys.length; i++) {
+    const card = sideboard[sideKeys[i]];    // get the card
         // check the playset rule todo add handling of sideboard as well
-    let numCopies = card.copies;
+    const numCopies = card.copies;
         // todo change from standard to req.body.format and to add the sideboard copies
     if (numCopies > PlaysetRule.Standard) {
             // check that the card isnt 1 of the cards that ignore the playset rule
-      if (!IgnorePlayset[cardName]) {
-        let message = `Too many copies of ${cardName} and possibly`;
-        message += ' other cards as well';
+      if (!IgnorePlayset[card.name]) {
+        let message = `Too many copies of ${card.name} in`;
+        message += ' the sideboard and possibly other cards as well';
         return res.status(400).json({ error: message });
       }
     }
-
+console.dir('sideboard legality check starting');
        // legality check here
-      if (card.legalities){
-          for (let j = 0; j < card.legalities.length; j++){
-              //check that this entry is the format this deck is for
-              if (card.legalities[j].format === req.body.format){
-                  //check if the card is legal in this format
-                  if (card.legalities[j].legality !== "Legal"){
-                      let message = `${cardName} is not legal in`;
-                      message += ` ${card.legalities[j].format}`;
-                      return res.status(400).json({ error: message });
-                  }
-              }
+    if (card.legalities) {
+        //checker to verify the card has a legality ruling for the format
+        let legalInFormat = false;
+      for (let j = 0; j < card.legalities.length; j++) {
+              // check that this entry is the format this deck is for
+        if (card.legalities[j].format === req.body.format) {
+            console.dir(`${card.name} is legal in ${req.body.format}`);
+            //set checker to true
+            legalInFormat = true;
+                  // check if the card is legal in this format
+          if (card.legalities[j].legality !== 'Legal') {
+              console.dir(`${card.name} is illegal in ${req.body.format}`);
+            let message = `${card.name} is not legal in`;
+            message += ` ${card.legalities[j].format}`;
+            return res.status(400).json({ error: message });
           }
+        }
       }
-      //if card.legalities doesnt exist, the card is standard legal
-      //and thus legal everywhere
+        //check that the format being checked for was found in
+        //the legality list
+        if (!legalInFormat){
+            console.dir(`${card.name} is not legal in ${req.body.format}`);
+            //format wasn't found, so error
+            let message = `${card.name} is not legal in`;
+            message += ` ${req.body.format}`;
+            return res.status(400).json({ error: message });
+        }
+    }
+      // if card.legalities doesnt exist, the card is standard legal
+      // and thus legal everywhere
   }
 
-  return 1; //handling npm test error
+  return true; // handling npm test error
 };
 
 const makerPage = (req, res) => res.render('make', { csrfToken: req.csrfToken() });
