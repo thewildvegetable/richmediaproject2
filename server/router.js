@@ -8,6 +8,7 @@ const router = (app) => {
   app.get('/getAds', mid.requiresSecure, controllers.Account.getAds);
   app.get('/getDecks', controllers.Deck.getDecks);
   app.get('/getDecksOwner', controllers.Deck.getDecksByOwner);
+  app.get('/getDecksFormat', controllers.Deck.getDecksByFormat);
   app.get('/deck', mid.requiresSecure, controllers.Deck.viewDeckPage);
   app.get('/getDeck', controllers.Deck.getDeckById);
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);

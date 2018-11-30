@@ -6,10 +6,15 @@ var pageNum = 1; //what page of decks are we on?
 var maxPageNum = 1; //how many pages are there
 var previousButton = void 0; //previous page button
 var nextButton = void 0; //next page button
+var standardButton = void 0; //standard format button
+var modernButton = void 0; //modern format button
+var legacyButton = void 0; //legacy format button
+var commanderButton = void 0; //commander format button
+var allButton = void 0; //all formats button
+var formatDisplay = void 0; //the div contianing the format currently displayed
 
 //send to the server a request to view a specific decklist
 var ViewDeck = function ViewDeck(e) {
-
     var deckForm = e.target;
     var idField = deckForm.querySelector('.idField');
     var csrfField = deckForm.querySelector('.csrfField');
@@ -125,6 +130,17 @@ var MoveNewPage = function MoveNewPage(num) {
 //load all the decks from the server
 var loadDecksFromServer = function loadDecksFromServer() {
     sendAjax('GET', '/getDecks', null, function (data) {
+        formatDisplay.textContent = "All Formats";
+        ReactDOM.render(React.createElement(DeckList, { decks: data.decks }), document.querySelector("#decks"));
+    });
+};
+
+//load all the decks of a specific format from the server
+var loadFormatDecksFromServer = function loadFormatDecksFromServer(formatName) {
+    var formatInfo = 'format=' + formatName;
+    sendAjax('GET', '/getDecksFormat', formatInfo, function (data) {
+        console.dir(data);
+        formatDisplay.textContent = formatName;
         ReactDOM.render(React.createElement(DeckList, { decks: data.decks }), document.querySelector("#decks"));
     });
 };
@@ -133,9 +149,14 @@ var loadDecksFromServer = function loadDecksFromServer() {
 var setup = function setup(csrf) {
     ReactDOM.render(React.createElement('deckForm', { csrf: csrf }), document.querySelector("#decks"));
     getAds();
-    //get the next button and the previous button
+    //get the buttons
     previousButton = document.getElementById('previous');
     nextButton = document.getElementById('next');
+    standardButton = document.getElementById('standard');
+    modernButton = document.getElementById('modern');
+    legacyButton = document.getElementById('legacy');
+    commanderButton = document.getElementById('commander');
+    allButton = document.getElementById('all');
 
     //add onclick events
     previousButton.onclick = function () {
@@ -144,8 +165,24 @@ var setup = function setup(csrf) {
     nextButton.onclick = function () {
         MoveNewPage(1);
     };
+    standardButton.onclick = function () {
+        loadFormatDecksFromServer("Standard");
+    };
+    modernButton.onclick = function () {
+        loadFormatDecksFromServer("Modern");
+    };
+    legacyButton.onclick = function () {
+        loadFormatDecksFromServer("Legacy");
+    };
+    commanderButton.onclick = function () {
+        loadFormatDecksFromServer("Commander");
+    };
+    allButton.onclick = loadDecksFromServer;
 
-    loadDecksFromServer();
+    //get format display
+    formatDisplay = document.getElementById("currentFormat");
+
+    loadFormatDecksFromServer("Standard");
 };
 
 //get csrf token

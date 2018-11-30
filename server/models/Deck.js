@@ -33,7 +33,7 @@ const DeckSchema = new mongoose.Schema({
 
   format: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
     set: setName,
   },

@@ -470,11 +470,13 @@ const getDecksByOwner = (request, response) => {
   });
 };
 
-const getDecksByFormat = (request, response) => {
-  const req = request;
-  const res = response;
+const getDecksByFormat = (req, res) => {
+    // parse the url
+  const parsedUrl = url.parse(req.url);
 
-  return Deck.DeckModel.findByFormat(req.body.format, (err, docs) => {
+  // grab the query parameters
+  const params = query.parse(parsedUrl.query);
+  return Deck.DeckModel.findByFormat(params.format, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });

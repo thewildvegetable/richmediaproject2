@@ -3,11 +3,16 @@ let deckNodes = [];     //all the decks from the server as react elements
 let pageNum = 1;        //what page of decks are we on?
 let maxPageNum = 1;     //how many pages are there
 let previousButton;     //previous page button
-let nextButton;     //next page button
+let nextButton;         //next page button
+let standardButton;     //standard format button
+let modernButton;       //modern format button
+let legacyButton;       //legacy format button
+let commanderButton;    //commander format button
+let allButton;          //all formats button
+let formatDisplay;      //the div contianing the format currently displayed
 
 //send to the server a request to view a specific decklist
 const ViewDeck = (e) => {
-    
     const deckForm = e.target;
     const idField = deckForm.querySelector('.idField');
     const csrfField = deckForm.querySelector('.csrfField');
@@ -116,6 +121,19 @@ const MoveNewPage = (num) => {
 //load all the decks from the server
 const loadDecksFromServer = () => {
     sendAjax('GET', '/getDecks', null, (data) => {
+        formatDisplay.textContent = "All Formats";
+        ReactDOM.render(
+            <DeckList decks={data.decks} />,
+            document.querySelector("#decks")
+        );
+    });
+};
+
+//load all the decks of a specific format from the server
+const loadFormatDecksFromServer = (formatName) => {
+    let formatInfo = `format=${formatName}`;
+    sendAjax('GET', '/getDecksFormat', formatInfo, (data) => {
+        formatDisplay.textContent = formatName;
         ReactDOM.render(
             <DeckList decks={data.decks} />,
             document.querySelector("#decks")
@@ -130,9 +148,14 @@ const setup = function(csrf) {
         document.querySelector("#decks")
     );
     getAds();
-    //get the next button and the previous button
+    //get the buttons
     previousButton = document.getElementById('previous');
     nextButton = document.getElementById('next');
+    standardButton = document.getElementById('standard');
+    modernButton = document.getElementById('modern');
+    legacyButton = document.getElementById('legacy');
+    commanderButton = document.getElementById('commander');
+    allButton = document.getElementById('all');
     
     //add onclick events
     previousButton.onclick = () => {
@@ -141,8 +164,24 @@ const setup = function(csrf) {
     nextButton.onclick = () => {
         MoveNewPage(1);
     };
+    standardButton.onclick = () => {
+        loadFormatDecksFromServer("Standard");
+    };
+    modernButton.onclick = () => {
+        loadFormatDecksFromServer("Modern");
+    };
+    legacyButton.onclick = () => {
+        loadFormatDecksFromServer("Legacy");
+    };
+    commanderButton.onclick = () => {
+        loadFormatDecksFromServer("Commander");
+    };
+    allButton.onclick = loadDecksFromServer;
     
-    loadDecksFromServer();
+    //get format display
+    formatDisplay = document.getElementById("currentFormat");
+    
+    loadFormatDecksFromServer("Standard");
 };
 
 //get csrf token

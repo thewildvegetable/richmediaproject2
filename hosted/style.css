@@ -47,6 +47,10 @@ nav:nth-child(1) {
     background-color: #66bdff;
 }
 
+.formatChange:hover {
+    cursor: pointer;
+}
+
 .deckForm {
     border: 2px solid #338acc;
     width: 100%;
