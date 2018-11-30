@@ -59,11 +59,6 @@ var DeckForm = function DeckForm(props) {
             ),
             React.createElement(
                 "option",
-                { value: "Vintage" },
-                "Vintage"
-            ),
-            React.createElement(
-                "option",
                 { value: "Commander" },
                 "Commander"
             )

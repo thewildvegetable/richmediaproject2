@@ -32,7 +32,6 @@ const DeckForm = (props) => {
                 <option value="Standard">Standard</option>
                 <option value="Modern">Modern</option>
                 <option value="Legacy">Legacy</option>
-                <option value="Vintage">Vintage</option>
                 <option value="Commander">Commander</option>
             </select>
             <label htmlFor="main">Mainboard: </label>
