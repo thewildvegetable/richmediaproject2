@@ -139,7 +139,6 @@ var loadDecksFromServer = function loadDecksFromServer() {
 var loadFormatDecksFromServer = function loadFormatDecksFromServer(formatName) {
     var formatInfo = 'format=' + formatName;
     sendAjax('GET', '/getDecksFormat', formatInfo, function (data) {
-        console.dir(data);
         formatDisplay.textContent = formatName;
         ReactDOM.render(React.createElement(DeckList, { decks: data.decks }), document.querySelector("#decks"));
     });

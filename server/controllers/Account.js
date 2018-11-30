@@ -6,10 +6,17 @@ const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+const changePasswordPage = (req, res) => {
+  res.render('password', { csrfToken: req.csrfToken() });
+};
+
 const allDecksPage = (req, res) => {
   res.render('app', { csrfToken: req.csrfToken() });
 };
 
+const notFoundPage = (req, res) => {
+  res.render('notFound', { csrfToken: req.csrfToken() });
+};
 
 const logout = (req, res) => {
   req.session.destroy();
@@ -119,6 +126,55 @@ const getAds = (request, response) => {
   return res.json(ads);
 };
 
+const changePassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+    // cast to strings
+  const username = req.session.account.username;
+  req.body.pass = `${req.body.pass}`;
+  req.body.pass2 = `${req.body.pass2}`;
+
+  if (!req.body.pass || !req.body.pass2) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  if (req.body.pass === req.body.pass2) {
+    return res.status(400).json({ error: 'New Password cannot be the same as the old password' });
+  }
+
+  return Account.AccountModel.authenticate(username, req.body.pass, (err, account) => {
+    if (err || !account) {
+      return res.status(400).json({ error: 'Wrong username or password' });
+    }
+
+    req.session.account = Account.AccountModel.toAPI(account);
+
+    return Account.AccountModel.generateHash(req.body.pass2, (salt, hash) => {
+      const changedAccount = account;
+      changedAccount.salt = salt;
+      changedAccount.password = hash;
+
+      const savePromise = changedAccount.save();
+
+      savePromise.then(() => {
+        req.session.account = Account.AccountModel.toAPI(changedAccount);
+        return res.json({ redirect: '/' });
+      });
+
+      savePromise.catch((errEvent) => {
+        console.log(errEvent);
+
+        if (errEvent.code === 11000) {
+          return res.status(400).json({ error: 'Username already in use' });
+        }
+
+        return res.status(400).json({ error: 'An error occured' });
+      });
+    });
+  });
+};
+
 module.exports.loginPage = loginPage;
 module.exports.allDecksPage = allDecksPage;
 module.exports.login = login;
@@ -126,3 +182,6 @@ module.exports.logout = logout;
 module.exports.signup = signup;
 module.exports.getToken = getToken;
 module.exports.getAds = getAds;
+module.exports.notFoundPage = notFoundPage;
+module.exports.changePage = changePasswordPage;
+module.exports.changePassword = changePassword;
