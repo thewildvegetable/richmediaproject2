@@ -467,8 +467,8 @@ const makeDeckEdit = (req, res, cards, sideboard, deckData, errors) => {
   if (checkRules(req, res, cards, sideboard) === true) {
     let deck = deckData;
       
-    deck.cards = JSON.stringify(cards),
-    deck.sideboard = JSON.stringify(sideboard),
+    deck.cards = JSON.stringify(cards);
+    deck.sideboard = JSON.stringify(sideboard);
 
     const editDeckPromise = deck.save();
 
