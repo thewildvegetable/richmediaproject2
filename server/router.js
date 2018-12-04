@@ -17,6 +17,8 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
   app.get('/maker', mid.requiresLogin, controllers.Deck.makerPage);
   app.post('/maker', mid.requiresLogin, controllers.Deck.make);
+  app.get('/editer', mid.requiresLogin, controllers.Deck.editPage);
+  app.post('/editer', mid.requiresLogin, controllers.Deck.edit);
   app.get('/remove', mid.requiresLogin, controllers.Deck.removerPage);
   app.post('/remove', mid.requiresLogin, controllers.Deck.remove);
   app.get('/', mid.requiresSecure, controllers.Account.allDecksPage);
