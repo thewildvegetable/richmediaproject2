@@ -491,7 +491,12 @@ console.dir(`deckData.format makedeck ${deckData.format}`);
 };
 
 //find the cards for the edited deck
-const cardSearchEdit = (req, res, iteration, cards, deck, sideboard, mainDeckSize, deckData, errors) => {
+const cardSearchEdit = (req, res, 
+                        iteration, 
+                        cards, deck, 
+                        sideboard, 
+                        mainDeckSize, 
+                        deckData, errors) => {
     // get the card
   const cardInfo = cards[iteration];
   const mainDeck = deck;
@@ -605,11 +610,13 @@ const getCardsEdit = (req, res) => {
   }
     
     //get the deck
-    return Deck.DeckModel.findById(req.body._id, (err, deckData) => {
-      if (err || !deckData) {
+    return Deck.DeckModel.findById(req.body._id, (err, deckArr) => {
+      if (err || !deckArr) {
         return res.status(400).json({ error: 'An error occurred' });
       }
-        console.dir(`${deckData.name}`);
+      
+      let deckData = deckArr[0];
+        
       // parse out the maindeck
       const cards = req.body.deckList.split('\r\n');
 
