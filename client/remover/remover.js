@@ -17,6 +17,14 @@ const removeDeck = (e) => {
     return false;
 };
 
+//change window to the edit deck window
+const editDeck = (id) => {
+    //build our x-www-form-urlencoded format
+    const searchData = `_id=${id}`;
+    
+    window.location = `/editer?${searchData}`;
+};
+
 const DeckList = function(props) {
     if (props.decks.length === 0) {
         return (
@@ -40,8 +48,8 @@ const DeckList = function(props) {
                     <input name="_id" type="hidden" value={deck._id} className="idField"/>
                     <input name="_csrf" type="hidden" value={csrf} className="csrfField"/>
                     <input className="makeDeckSubmit" type="submit" value="Remove" />
-
                 </form>
+                <button className='editDeckButton' onClick={() => editDeck(deck._id)}>Edit</button>
             </div>
         );
     });

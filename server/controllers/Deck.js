@@ -44,7 +44,7 @@ const StandardLegalSets = {
 };  // all the standard legal sets 3 letter codes
 
 // check that the list given fits all the rules
-const checkRules = (req, res, cards, sideboard) => {
+const checkRules = (req, res, cards, sideboard, format) => {
   // get the keys for main and sideboard
   const mainKeys = Object.keys(cards);
   const sideKeys = Object.keys(sideboard);
@@ -58,8 +58,8 @@ const checkRules = (req, res, cards, sideboard) => {
       numCopies += sideboard[card.name].copies;
     }
 
-        // todo change from standard to req.body.format and to add the sideboard copies
-    if (numCopies > PlaysetRule[req.body.format]) {
+        //check correct number of copies
+    if (numCopies > PlaysetRule[format]) {
             // check that the card isnt 1 of the cards that ignore the playset rule
       if (!IgnorePlayset[card.name]) {
         let message = `Too many copies of ${card.name} and possibly`;
@@ -74,7 +74,7 @@ const checkRules = (req, res, cards, sideboard) => {
       let legalInFormat = false;
       for (let j = 0; j < card.legalities.length; j++) {
               // check that this entry is the format this deck is for
-        if (card.legalities[j].format === req.body.format) {
+        if (card.legalities[j].format === format) {
           legalInFormat = true;
 
                   // check if the card is legal in this format
@@ -89,7 +89,7 @@ const checkRules = (req, res, cards, sideboard) => {
         // the legality list
       if (!legalInFormat) {
             // format wasn't found, check if its standard
-        if (req.body.format === 'Standard') {
+        if (format === 'Standard') {
                 // was the card printed in a standard legal set
           let standardLegal = false;
           for (let j = 0; j < card.printings.length; j++) {
@@ -103,13 +103,13 @@ const checkRules = (req, res, cards, sideboard) => {
           if (!standardLegal) {
                     // card isnt legal
             let message = `${card.name} is not legal in`;
-            message += ` ${req.body.format}`;
+            message += ` ${format}`;
             return res.status(400).json({ error: message });
           }
         } else {
                 // format isnt standard, so error
           let message = `${card.name} is not legal in`;
-          message += ` ${req.body.format}`;
+          message += ` ${format}`;
           return res.status(400).json({ error: message });
         }
       }
@@ -123,8 +123,7 @@ const checkRules = (req, res, cards, sideboard) => {
     const card = sideboard[sideKeys[i]];    // get the card
         // check the playset rule todo add handling of sideboard as well
     const numCopies = card.copies;
-        // todo change from standard to req.body.format and to add the sideboard copies
-    if (numCopies > PlaysetRule.Standard) {
+    if (numCopies > PlaysetRule[format]) {
             // check that the card isnt 1 of the cards that ignore the playset rule
       if (!IgnorePlayset[card.name]) {
         let message = `Too many copies of ${card.name} in`;
@@ -139,7 +138,7 @@ const checkRules = (req, res, cards, sideboard) => {
       let legalInFormat = false;
       for (let j = 0; j < card.legalities.length; j++) {
               // check that this entry is the format this deck is for
-        if (card.legalities[j].format === req.body.format) {
+        if (card.legalities[j].format === format) {
             // set checker to true
           legalInFormat = true;
                   // check if the card is legal in this format
@@ -154,7 +153,7 @@ const checkRules = (req, res, cards, sideboard) => {
         // the legality list
       if (!legalInFormat) {
              // format wasn't found, check if its standard
-        if (req.body.format === 'Standard') {
+        if (format === 'Standard') {
                 // was the card printed in a standard legal set
           let standardLegal = false;
           for (let j = 0; j < card.printings.length; j++) {
@@ -168,13 +167,13 @@ const checkRules = (req, res, cards, sideboard) => {
           if (!standardLegal) {
                     // card isnt legal
             let message = `${card.name} is not legal in`;
-            message += ` ${req.body.format}`;
+            message += ` ${format}`;
             return res.status(400).json({ error: message });
           }
         } else {
                 // format isnt standard, so error
           let message = `${card.name} is not legal in`;
-          message += ` ${req.body.format}`;
+          message += ` ${format}`;
           return res.status(400).json({ error: message });
         }
       }
@@ -221,7 +220,7 @@ const makeDeck = (req, res, cards, sideboard, errors) => {
   }
 
   // check that everything follows the rules
-  if (checkRules(req, res, cards, sideboard) === true) {
+  if (checkRules(req, res, cards, sideboard, req.body.format) === true) {
     const deckData = {
       name: req.body.name,
       cards: JSON.stringify(cards),
@@ -449,7 +448,7 @@ const makeDeckEdit = (req, res, cards, sideboard, deckData, errors) => {
     deckSize += cards[deckKeys[i]].copies;
   }
   // todo change from 60 to a check if commander or not
-  if (deckSize < SizeRule[req.body.format]) {
+  if (deckSize < SizeRule[deckData.format]) {
     return res.status(400).json({ error: 'Deck is too small' });
   }
 
@@ -462,9 +461,9 @@ const makeDeckEdit = (req, res, cards, sideboard, deckData, errors) => {
   if (sideSize > 15) {
     return res.status(400).json({ error: 'Sideboard must be 15 or less cards' });
   }
-
+console.dir(`deckData.format makedeck ${deckData.format}`);
   // check that everything follows the rules
-  if (checkRules(req, res, cards, sideboard) === true) {
+  if (checkRules(req, res, cards, sideboard, deckData.format) === true) {
     let deck = deckData;
       
     deck.cards = JSON.stringify(cards);
@@ -498,7 +497,7 @@ const cardSearchEdit = (req, res, iteration, cards, deck, sideboard, mainDeckSiz
   const mainDeck = deck;
   const side = sideboard;
   let i = iteration;
-
+console.dir(`deckData.format cardsearch ${deckData.format}`);
     // seperate it into the # of copies and the name
   const cardName = cardInfo.slice(cardInfo.indexOf(' ')).trim();
   const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
@@ -606,11 +605,11 @@ const getCardsEdit = (req, res) => {
   }
     
     //get the deck
-    return Deck.DeckModel.findById(req.body.deckId, (err, deckData) => {
-      if (err) {
+    return Deck.DeckModel.findById(req.body._id, (err, deckData) => {
+      if (err || !deckData) {
         return res.status(400).json({ error: 'An error occurred' });
       }
-        
+        console.dir(`${deckData.name}`);
       // parse out the maindeck
       const cards = req.body.deckList.split('\r\n');
 
@@ -768,7 +767,7 @@ const removeDeck = (request, response) => {
 
 module.exports.makerPage = makerPage;
 module.exports.make = getCards;
-module.exports.editPage = makerPage;
+module.exports.editPage = editPage;
 module.exports.edit = getCardsEdit;
 module.exports.viewDeckPage = viewDeckPage;
 module.exports.removerPage = removerPage;

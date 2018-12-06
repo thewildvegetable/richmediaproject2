@@ -19,6 +19,14 @@ var removeDeck = function removeDeck(e) {
     return false;
 };
 
+//change window to the edit deck window
+var editDeck = function editDeck(id) {
+    //build our x-www-form-urlencoded format
+    var searchData = '_id=' + id;
+
+    window.location = '/editer?' + searchData;
+};
+
 var DeckList = function DeckList(props) {
     if (props.decks.length === 0) {
         return React.createElement(
@@ -55,6 +63,13 @@ var DeckList = function DeckList(props) {
                 React.createElement('input', { name: '_id', type: 'hidden', value: deck._id, className: 'idField' }),
                 React.createElement('input', { name: '_csrf', type: 'hidden', value: csrf, className: 'csrfField' }),
                 React.createElement('input', { className: 'makeDeckSubmit', type: 'submit', value: 'Remove' })
+            ),
+            React.createElement(
+                'button',
+                { className: 'editDeckButton', onClick: function onClick() {
+                        return editDeck(deck._id);
+                    } },
+                'Edit'
             )
         );
     });
