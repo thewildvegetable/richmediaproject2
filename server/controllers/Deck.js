@@ -58,7 +58,7 @@ const checkRules = (req, res, cards, sideboard, format) => {
       numCopies += sideboard[card.name].copies;
     }
 
-        //check correct number of copies
+        // check correct number of copies
     if (numCopies > PlaysetRule[format]) {
             // check that the card isnt 1 of the cards that ignore the playset rule
       if (!IgnorePlayset[card.name]) {
@@ -427,7 +427,7 @@ const getCards = (req, res) => {
   return cardSearch(req, res, 0, cards, deck, sideboardList, mainDeckSize, errors);
 };
 
-//edit the deck
+// edit the deck
 const makeDeckEdit = (req, res, cards, sideboard, deckData, errors) => {
   // if there are any errors, tell the user
   if (errors.length > 0) {
@@ -461,11 +461,11 @@ const makeDeckEdit = (req, res, cards, sideboard, deckData, errors) => {
   if (sideSize > 15) {
     return res.status(400).json({ error: 'Sideboard must be 15 or less cards' });
   }
-console.dir(`deckData.format makedeck ${deckData.format}`);
+
   // check that everything follows the rules
   if (checkRules(req, res, cards, sideboard, deckData.format) === true) {
-    let deck = deckData;
-      
+    const deck = deckData;
+
     deck.cards = JSON.stringify(cards);
     deck.sideboard = JSON.stringify(sideboard);
 
@@ -490,19 +490,19 @@ console.dir(`deckData.format makedeck ${deckData.format}`);
   return 1;
 };
 
-//find the cards for the edited deck
-const cardSearchEdit = (req, res, 
-                        iteration, 
-                        cards, deck, 
-                        sideboard, 
-                        mainDeckSize, 
+// find the cards for the edited deck
+const cardSearchEdit = (req, res,
+                        iteration,
+                        cards, deck,
+                        sideboard,
+                        mainDeckSize,
                         deckData, errors) => {
     // get the card
   const cardInfo = cards[iteration];
   const mainDeck = deck;
   const side = sideboard;
   let i = iteration;
-console.dir(`deckData.format cardsearch ${deckData.format}`);
+
     // seperate it into the # of copies and the name
   const cardName = cardInfo.slice(cardInfo.indexOf(' ')).trim();
   const numCopies = parseInt(cardInfo.split(' ', 1)[0], 10);
@@ -602,83 +602,83 @@ console.dir(`deckData.format cardsearch ${deckData.format}`);
   }
 };
 
-//get the deck object and the cards being added to it
+// get the deck object and the cards being added to it
 const getCardsEdit = (req, res) => {
     // check that a valid deckname and list are sent up todo add format
   if (!req.body.deckList) {
     return res.status(400).json({ error: 'Decklist is required' });
   }
-    
-    //get the deck
-    return Deck.DeckModel.findById(req.body._id, (err, deckArr) => {
-      if (err || !deckArr) {
-        return res.status(400).json({ error: 'An error occurred' });
-      }
-      
-      let deckData = deckArr[0];
-        
+
+    // get the deck
+  return Deck.DeckModel.findById(req.body._id, (err, deckArr) => {
+    if (err || !deckArr) {
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    const deckData = deckArr[0];
+
       // parse out the maindeck
-      const cards = req.body.deckList.split('\r\n');
+    const cards = req.body.deckList.split('\r\n');
 
       // parse out sideboard
-      let sideboard = [];
-      if (req.body.sideboard !== '') {
-        sideboard = req.body.sideboard.split('\r\n');
-      }
+    let sideboard = [];
+    if (req.body.sideboard !== '') {
+      sideboard = req.body.sideboard.split('\r\n');
+    }
 
       // make sure no card is repeated in the mainboard. enforce playset rule
-      for (let i = 0; i < cards.length; i++) {
-        const index = cards[i].indexOf(' ');
+    for (let i = 0; i < cards.length; i++) {
+      const index = cards[i].indexOf(' ');
 
-        const cardName = cards[i].slice(index).trim();
+      const cardName = cards[i].slice(index).trim();
 
         // if indexOf and LastIndexOf arent the same, there's a duplicate
-        if (req.body.deckList.indexOf(cardName) !== req.body.deckList.lastIndexOf(cardName)) {
+      if (req.body.deckList.indexOf(cardName) !== req.body.deckList.lastIndexOf(cardName)) {
           // check to make sure its not a card with another card in its name
           // 2 spaces away in the string, aka what is a number if this is a repeat
-          const start = req.body.deckList.lastIndexOf(cardName) - 2;
-          const previousTwoChars = req.body.deckList.slice(start, start + 2);
-          const isItANumber = parseInt(previousTwoChars, 10);
-          if (isItANumber > 0) {
-            let message = `${cardName} is present more than once in the decklist.`;
-            message += ' Please combine it into 1 line';
-            return res.status(400).json({ error: message });
-          }
+        const start = req.body.deckList.lastIndexOf(cardName) - 2;
+        const previousTwoChars = req.body.deckList.slice(start, start + 2);
+        const isItANumber = parseInt(previousTwoChars, 10);
+        if (isItANumber > 0) {
+          let message = `${cardName} is present more than once in the decklist.`;
+          message += ' Please combine it into 1 line';
+          return res.status(400).json({ error: message });
         }
       }
-      const mainDeckSize = cards.length;    // last entry of the maindeck
-      for (let i = 0; i < sideboard.length; i++) {
-        const index = sideboard[i].indexOf(' ');
+    }
+    const mainDeckSize = cards.length;    // last entry of the maindeck
+    for (let i = 0; i < sideboard.length; i++) {
+      const index = sideboard[i].indexOf(' ');
 
-        const cardName = sideboard[i].slice(index).trim();
+      const cardName = sideboard[i].slice(index).trim();
 
             // if indexOf and LastIndexOf arent the same, there's a duplicate
-        if (req.body.sideboard.indexOf(cardName) !== req.body.sideboard.lastIndexOf(cardName)) {
+      if (req.body.sideboard.indexOf(cardName) !== req.body.sideboard.lastIndexOf(cardName)) {
           // check to make sure its not a card with another card in its name
             // 2 spaces away in the string, aka what is a number if this is a repeat
-          const start = req.body.sideboard.lastIndexOf(cardName) - 2;
-          const previousTwoChars = req.body.sideboard.slice(start, start + 2);
-          const isItANumber = parseInt(previousTwoChars, 10);
-          if (isItANumber > 0) {
-            let message = `${cardName} is present more than once in the sideboard.`;
-            message += ' Please combine it into 1 line';
-            return res.status(400).json({ error: message });
-          }
+        const start = req.body.sideboard.lastIndexOf(cardName) - 2;
+        const previousTwoChars = req.body.sideboard.slice(start, start + 2);
+        const isItANumber = parseInt(previousTwoChars, 10);
+        if (isItANumber > 0) {
+          let message = `${cardName} is present more than once in the sideboard.`;
+          message += ' Please combine it into 1 line';
+          return res.status(400).json({ error: message });
         }
-
-        cards.push(sideboard[i]);
       }
 
+      cards.push(sideboard[i]);
+    }
+
         // the array to hold the jsons of the deck
-      const deck = {};
-      const sideboardList = {};
+    const deck = {};
+    const sideboardList = {};
 
         // the array holding all card names that couldnt be found
-      const errors = [];
+    const errors = [];
 
         // call the recursive search function
-      return cardSearchEdit(req, res, 0, cards, deck, sideboardList, mainDeckSize, deckData, errors);
-    });
+    return cardSearchEdit(req, res, 0, cards, deck, sideboardList, mainDeckSize, deckData, errors);
+  });
 };
 
 const makerPage = (req, res) => res.render('make', { csrfToken: req.csrfToken() });
