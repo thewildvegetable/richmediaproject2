@@ -373,7 +373,7 @@ h3.deckLevel {
 
 #card{
     position: fixed;
-    left: 85%;
+    right: 50px;
     top: 30%;
 }
 
@@ -446,4 +446,12 @@ h3.deckLevel {
 
 #change{
     float:right;
+}
+
+#currentFormat{
+    margin-top: 10px;
+    margin-bottom: -40px;
+    text-align: center;
+    text-decoration: underline;
+    font-size: 50px;
 }

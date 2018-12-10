@@ -41,6 +41,17 @@ const SideboardDisplay = (props) => {
     //get the keys
     let sideKeys = Object.keys(props.side);
     
+    //if no sideboard for the deck, remove the sideboard option
+    if (sideKeys.length < 1){
+        document.getElementById('sideboardList').style.display = 'none';
+        document.getElementById('side').style.display = 'none';
+        
+        return(
+            <div>
+            </div>
+        )
+    }
+    
     //setup the mainboard
     let deckNodes = sideKeys.map(function(key) {
         let card = props.side[key];
