@@ -434,10 +434,14 @@ h3.deckLevel {
 }
 
 #ad2{
-    margin-left: 22%;
-    margin-top: 50px;
+    margin: 0 auto;
     height: 128px;
     width: 700px;
+}
+
+#adHolder{
+    margin-top: 50px;
+    text-align: center;
 }
 
 #format{
